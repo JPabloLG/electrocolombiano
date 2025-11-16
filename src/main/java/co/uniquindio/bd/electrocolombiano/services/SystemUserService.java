@@ -45,6 +45,7 @@ public class SystemUserService {
                 .role(userDTO.role())
                 .build();
         if (!systemUser.getPassword().equals(loginDTO.password())) {
+            throw new Exception("Contraseña incorrecta");
         }
 
         return new UserDTO(
