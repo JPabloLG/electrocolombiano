@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="700" prefWidth="1300" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.uniquindio.bd.electrocolombiano.controller.PrincipalController">
+
+    <top>
+        <VBox style="-fx-background-color: #2c3e50;">
+            <HBox alignment="CENTER_LEFT" style="-fx-padding: 20;">
+                <ImageView fitHeight="85.0" fitWidth="320.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../../../../images/logo_header_BD.png" />
+                    </image>
+                </ImageView>
+                <Region prefHeight="85.0" prefWidth="688.0" HBox.hgrow="ALWAYS" />
+                <VBox alignment="CENTER_RIGHT" prefHeight="85.0" prefWidth="257.0">
+                    <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="179.0" style="-fx-text-fill: #ecf0f1; -fx-font-size: 14;" text="Bienvenido" />
+                    <Label fx:id="txt_header_currentUser" alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="221.0" style="-fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;" text="Juan Pablo López" />
+               <Label prefHeight="7.0" prefWidth="117.0">
+                  <font>
+                     <Font size="7.0" />
+                  </font>
+               </Label>
+                    <!-- Botón de Cerrar Sesión con el nuevo estilo -->
+                    <Button onAction="#logout_btn" prefHeight="17.0" prefWidth="110" style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12; -fx-background-radius: 8; -fx-border-radius: 8; -fx-effect: dropshadow(gaussian, rgba(149, 165, 166, 0.4), 8, 0.3, 0, 2);" text="🚪 Salir">
+                        <cursor>
+                            <Cursor fx:constant="HAND" />
+                        </cursor>
+                    </Button>
+                </VBox>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background: #ecf0f1;">
+            <VBox alignment="TOP_CENTER" spacing="30" style="-fx-padding: 40;">
+                <Label fx:id="txt_principal_currentUser" alignment="CENTER" contentDisplay="CENTER" prefHeight="62.0" prefWidth="847.0" style="-fx-font-size: 32; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="PÁGINA PRINCIPAL DE JUAN PABLO LÓPEZ " textAlignment="CENTER" />
+
+                <GridPane alignment="CENTER" hgap="25" prefHeight="209.0" prefWidth="1205.0" vgap="50">
+                    <columnConstraints>
+                        <ColumnConstraints prefWidth="300" />
+                        <ColumnConstraints prefWidth="300" />
+                        <ColumnConstraints prefWidth="300" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints prefHeight="220" />
+                        <RowConstraints prefHeight="220" />
+                    </rowConstraints>
+
+                    <!-- Fila 1 -->
+                    <VBox alignment="CENTER" spacing="20" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <Label style="-fx-font-size: 48;" text="👥" />
+                        <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Crear Cliente" />
+                        <Label style="-fx-font-size: 12; -fx-text-fill: #7f8c8d;" text="Registrar nuevos clientes" />
+                        <Button onAction="#createCustomer_btn" prefHeight="35" prefWidth="120" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14; -fx-background-radius: 8; -fx-border-radius: 8; -fx-effect: dropshadow(gaussian, rgba(52, 152, 219, 0.4), 8, 0.3, 0, 2);" text="Acceder">
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                        </Button>
+                    </VBox>
+
+                    <VBox alignment="CENTER" spacing="20" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <Label style="-fx-font-size: 48;" text="🛒" />
+                        <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Crear Venta" />
+                        <Label style="-fx-font-size: 12; -fx-text-fill: #7f8c8d;" text="Procesar nueva venta" />
+                        <Button onAction="#createSale_btn" prefHeight="35" prefWidth="120" style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14; -fx-background-radius: 8; -fx-border-radius: 8; -fx-effect: dropshadow(gaussian, rgba(46, 204, 113, 0.4), 8, 0.3, 0, 2);" text="Acceder">
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                        </Button>
+                    </VBox>
+
+                    <!-- Fila 2 -->
+                    <VBox alignment="CENTER" spacing="20" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);" GridPane.columnIndex="2">
+                        <Label style="-fx-font-size: 48;" text="📦" />
+                        <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Crear Producto" />
+                        <Label style="-fx-font-size: 12; -fx-text-fill: #7f8c8d;" text="Gestionar inventario" />
+                        <Button onAction="#createProduct_btn" prefHeight="35" prefWidth="120" style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14; -fx-background-radius: 8; -fx-border-radius: 8; -fx-effect: dropshadow(gaussian, rgba(243, 156, 18, 0.4), 8, 0.3, 0, 2);" text="Acceder">
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                        </Button>
+                    </VBox>
+
+                    <VBox alignment="CENTER" spacing="20" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <Label style="-fx-font-size: 48;" text="🏛️" />
+                        <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Reporte DIAN" />
+                        <Label style="-fx-font-size: 12; -fx-text-fill: #7f8c8d;" text="Reporte trimestral DIAN" />
+                        <Button onAction="#reportDIAN_btn" prefHeight="35" prefWidth="120" style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14; -fx-background-radius: 8; -fx-border-radius: 8; -fx-effect: dropshadow(gaussian, rgba(155, 89, 182, 0.4), 8, 0.3, 0, 2);" text="Generar">
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                        </Button>
+                    </VBox>
+                </GridPane>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" prefHeight="47.0" prefWidth="1300.0" style="-fx-background-color: #34495e; -fx-padding: 15;">
+            <Label style="-fx-text-fill: #bdc3c7; -fx-font-size: 12;" text="© ELECTROCOLOMBIANO 2025" />
+        </HBox>
+    </bottom>
+</BorderPane>

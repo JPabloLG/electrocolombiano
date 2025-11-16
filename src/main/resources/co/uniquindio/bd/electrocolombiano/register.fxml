@@ -17,7 +17,7 @@
                 <Image url="@../../../../images/login_BD.png" />
             </image>
         </ImageView>
-        <Label layoutX="526.0" layoutY="180.0" text="Regístrate" textFill="#3498db">
+        <Label layoutX="526.0" layoutY="180.0" text="Regístrate" textFill="#afdfff">
             <font>
                 <Font name="Berlin Sans FB" size="60.0" />
             </font>

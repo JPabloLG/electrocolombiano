@@ -6,6 +6,7 @@ module co.uniquindio.bd.electrocolombiano {
     requires java.management;
     requires javafx.graphics;
 
+
     opens co.uniquindio.bd.electrocolombiano to javafx.fxml;
     exports co.uniquindio.bd.electrocolombiano;
 
