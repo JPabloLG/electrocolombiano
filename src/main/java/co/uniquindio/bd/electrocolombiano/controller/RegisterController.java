@@ -14,7 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lombok.Builder;
 
-@Builder
+
 public class RegisterController {
 
 

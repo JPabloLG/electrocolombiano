@@ -75,7 +75,11 @@ public class UserDAOImpl implements UserDAO{
     @Override
     public UserDTO findByUserName(String username) {
 
-        String sql = "SELECT cedula, userName, fullName, role FROM system_user WHERE userName = ?";
+        String sql = "SELECT u.cedula, u.userName, u.fullName, u.password, " +
+                "r.id, r.roleName " +
+                "FROM SystemUser u " +
+                "JOIN rol r ON u.role_id = r.id " +
+                "WHERE u.userName = ?";
 
         try (Connection conn = JDBC.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -84,14 +88,17 @@ public class UserDAOImpl implements UserDAO{
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
+
                     Rol rol = new Rol(
                             rs.getString("roleName"),
-                            rs.getInt("roleId")
+                            rs.getInt("id")
                     );
+
                     return new UserDTO(
                             rs.getString("cedula"),
-                            rs.getString("userName"),
                             rs.getString("fullName"),
+                            rs.getString("userName"),
+                            rs.getString("password"),
                             rol
                     );
                 }

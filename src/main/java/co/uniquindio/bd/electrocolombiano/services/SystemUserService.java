@@ -4,7 +4,6 @@ import co.uniquindio.bd.electrocolombiano.dao.UserDAO;
 import co.uniquindio.bd.electrocolombiano.dto.LoginDTO;
 import co.uniquindio.bd.electrocolombiano.dto.RegisterDTO;
 import co.uniquindio.bd.electrocolombiano.dto.UserDTO;
-import co.uniquindio.bd.electrocolombiano.model.Rol;
 import co.uniquindio.bd.electrocolombiano.model.SystemUser;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +18,10 @@ public class SystemUserService {
 
     protected UserDAO userDAO;
 
+    public SystemUserService(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
+
     public UserDTO login(LoginDTO loginDTO) throws Exception {
 
         if (loginDTO.userName() == null || loginDTO.userName().isEmpty()) {
@@ -30,17 +33,25 @@ public class SystemUserService {
 
         UserDTO userDTO = userDAO.findByUserName(loginDTO.userName());
 
-        SystemUser systemUser =  SystemUser.builder().userName(userDTO.userName()).fullName(userDTO.fullName())
-                .cedula(userDTO.cedula()).role(userDTO.role()).build();
-        if (!(systemUser == null)) {
+        if (userDTO == null) {
             throw new Exception("El usuario no existe");
         }
+
+        SystemUser systemUser = SystemUser.builder()
+                .cedula(userDTO.cedula())
+                .fullName(userDTO.fullName())
+                .userName(userDTO.userName())
+                .password(userDTO.password())
+                .role(userDTO.role())
+                .build();
         if (!systemUser.getPassword().equals(loginDTO.password())) {
         }
+
         return new UserDTO(
                 systemUser.getCedula(),
-                systemUser.getUserName(),
                 systemUser.getFullName(),
+                systemUser.getUserName(),
+                systemUser.getPassword(),
                 systemUser.getRole()
         );
     }
@@ -57,7 +68,9 @@ public class SystemUserService {
                 .fullName(dto.fullName())
                 .role(dto.role())
                 .build();
-        return new UserDTO(nuevo.getCedula(), nuevo.getUserName(), nuevo.getFullName()
-                , nuevo.getRole());
+
+        return new UserDTO(nuevo.getCedula(),nuevo.getFullName(), nuevo.getUserName(),
+                nuevo.getPassword(),nuevo.getRole());
+
     }
 }
