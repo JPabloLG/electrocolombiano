@@ -27,20 +27,17 @@ public class PrincipalController {
     void logout_btn(ActionEvent event) throws IOException {
 
 
-        //Toda la logic
-
         App.setRoot("login", "ELECTROCOLOMBIANO -Inicio de Sesión-");
     }
 
     @FXML
     void createCustomer_btn(ActionEvent event) throws IOException {
-
         App.setRoot("createCustomer", "ELECTROCOLOMBIANO -Crear Cliente-");
     }
 
     @FXML
-    void createProduct_btn(ActionEvent event) {
-
+    void createProduct_btn(ActionEvent event) throws IOException {
+        App.setRoot("createProduct", "ELECTROCOLOMBIANO -Crear Producto-");
     }
 
     @FXML

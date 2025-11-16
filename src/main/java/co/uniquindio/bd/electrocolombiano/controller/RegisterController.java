@@ -26,7 +26,7 @@ public class RegisterController {
     private URL location;
 
     @FXML
-    private ComboBox<?> combo_Role;
+    private ComboBox<String> combo_Role;
 
     @FXML
     private Button register_btn;
@@ -59,7 +59,7 @@ public class RegisterController {
         assert txt_fullName != null : "fx:id=\"txt_fullName\" was not injected: check your FXML file 'register.fxml'.";
         assert txt_password != null : "fx:id=\"txt_password\" was not injected: check your FXML file 'register.fxml'.";
         assert txt_username != null : "fx:id=\"txt_username\" was not injected: check your FXML file 'register.fxml'.";
-
+        combo_Role.getItems().addAll("Administrador", "Vendedor");
     }
 
 }
