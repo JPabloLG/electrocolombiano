@@ -1,7 +1,10 @@
 package co.uniquindio.bd.electrocolombiano.controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import co.uniquindio.bd.electrocolombiano.App;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -28,6 +31,12 @@ public class FinishSaleController {
 
     @FXML
     private Label txt_total;
+
+
+    @FXML
+    void back_btn(ActionEvent event) throws IOException {
+        App.setRoot("createSale", "ELECTROCOLOMBIANO -Crear Venta-");
+    }
 
     @FXML
     void finishProcess_btn(ActionEvent event) {

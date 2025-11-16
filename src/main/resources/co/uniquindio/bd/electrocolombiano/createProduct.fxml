@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="700" prefWidth="1300" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.uniquindio.bd.electrocolombiano.controller.CreateProductController">
+    <top>
+        <VBox style="-fx-background-color: #2c3e50;">
+            <HBox alignment="CENTER_LEFT" style="-fx-padding: 15;">
+                <ImageView fitHeight="70.0" fitWidth="280.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../../../../images/logo_header_BD.png" />
+                    </image>
+                </ImageView>
+                <Region prefHeight="70.0" prefWidth="688.0" HBox.hgrow="ALWAYS" />
+                <VBox alignment="CENTER_RIGHT" prefHeight="70.0" prefWidth="257.0">
+                    <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="179.0" style="-fx-text-fill: #ecf0f1; -fx-font-size: 12;" text="Bienvenido" />
+                    <Label fx:id="txt_header_currentUser" alignment="CENTER_RIGHT" prefHeight="22.0" prefWidth="221.0" style="-fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold;" text="Juan Pablo López" />
+                </VBox>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background: #ecf0f1;">
+            <VBox alignment="TOP_CENTER" prefHeight="543.0" prefWidth="1300.0" spacing="20" style="-fx-padding: 25;">
+                <Label style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="CREAR NUEVO PRODUCTO" />
+
+                <!-- Sección de Información Básica del Producto -->
+                <VBox alignment="CENTER_LEFT" prefWidth="1200.0" spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);">
+                    <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Información Básica del Producto" />
+                    <HBox alignment="CENTER_LEFT" spacing="20">
+                        <VBox spacing="6">
+                            <Label style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Nombre del Producto *" />
+                            <TextField fx:id="txt_nameProduct" prefHeight="40" prefWidth="300" promptText="Ingrese el nombre del producto" stylesheets="@../../../../styles/style_text_field.css" />
+                        </VBox>
+                        <VBox spacing="6">
+                            <Label style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Stock Inicial *" />
+                            <TextField fx:id="txt_stock" prefHeight="46.0" prefWidth="175.0" promptText="Cantidad en stock" stylesheets="@../../../../styles/style_text_field.css" />
+                        </VBox>
+                  <Label fx:id="txt_clienteEncontrado" style="-fx-font-size: 14; -fx-text-fill: #27ae60; -fx-font-weight: bold;" text="El id del producto se genera automáticamente" />
+                    </HBox>
+                </VBox>
+
+                <!-- Sección de Valores y Precios -->
+                <VBox alignment="CENTER_LEFT" prefWidth="1200.0" spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);">
+                    <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Valores y Precios" />
+                    <HBox alignment="CENTER_LEFT" spacing="20">
+                        <VBox spacing="6">
+                            <Label style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Valor de Compra *" />
+                            <TextField fx:id="txt_purchaseValue" prefHeight="40" prefWidth="200" promptText="0.00" stylesheets="@../../../../styles/style_text_field.css" />
+                        </VBox>
+                        <VBox spacing="6">
+                            <Label style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Precio Unitario *" />
+                            <TextField fx:id="txt_unitPrice" prefHeight="40" prefWidth="200" promptText="0.00" stylesheets="@../../../../styles/style_text_field.css" />
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <!-- Sección de Categoría del Producto -->
+                <VBox alignment="CENTER_LEFT" prefWidth="1200.0" spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);">
+                    <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Categoría del Producto" />
+                    <HBox alignment="CENTER_LEFT" spacing="20">
+                        <VBox spacing="6">
+                            <Label style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Categoría *" />
+                            <ComboBox fx:id="combo_category" prefHeight="40" prefWidth="300" promptText="Seleccione una categoría" style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-font-size: 14;" stylesheets="@../../../../styles/style_combo_box.css" />
+                        </VBox>
+                        <VBox spacing="6">
+                            <Label style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="IVA Aplicado" />
+                            <TextField fx:id="txt_iva" editable="false" prefHeight="40" prefWidth="150" style="-fx-background-color: #f8f9fa; -fx-text-fill: #2c3e50; -fx-font-weight: bold;" />
+                        </VBox>
+                        <VBox spacing="6">
+                            <Label style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Margen de Ganancia" />
+                            <TextField fx:id="txt_profitMargin" editable="false" prefHeight="40" prefWidth="150" style="-fx-background-color: #f8f9fa; -fx-text-fill: #2c3e50; -fx-font-weight: bold;" />
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <!-- Botones de Acción -->
+                <HBox alignment="CENTER" spacing="20" style="-fx-padding: 15;">
+                    <Button onAction="#back_btn" prefHeight="40" prefWidth="140" style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14; -fx-background-radius: 8; -fx-border-radius: 8; -fx-effect: dropshadow(gaussian, rgba(149, 165, 166, 0.4), 8, 0.3, 0, 2);" text="⬅️ Volver">
+                        <cursor>
+                            <Cursor fx:constant="HAND" />
+                        </cursor>
+                    </Button>
+                    <Button onAction="#calculatePrice_btn" prefHeight="40" prefWidth="200" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14; -fx-background-radius: 8; -fx-border-radius: 8; -fx-effect: dropshadow(gaussian, rgba(52, 152, 219, 0.4), 8, 0.3, 0, 2);" text="🧮 Calcular Precio">
+                        <cursor>
+                            <Cursor fx:constant="HAND" />
+                        </cursor>
+                    </Button>
+                    <Button onAction="#saveProduct_btn" prefHeight="40" prefWidth="180" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14; -fx-background-radius: 8; -fx-border-radius: 8; -fx-effect: dropshadow(gaussian, rgba(39, 174, 96, 0.4), 8, 0.3, 0, 2);" text="💾 Guardar Producto">
+                        <cursor>
+                            <Cursor fx:constant="HAND" />
+                        </cursor>
+                    </Button>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" prefHeight="47.0" prefWidth="1300.0" style="-fx-background-color: #34495e; -fx-padding: 10;">
+            <Label style="-fx-text-fill: #bdc3c7; -fx-font-size: 11;" text="© ELECTROCOLOMBIANO 2025" />
+        </HBox>
+    </bottom>
+</BorderPane>
