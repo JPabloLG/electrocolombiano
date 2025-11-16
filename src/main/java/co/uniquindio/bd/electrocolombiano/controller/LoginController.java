@@ -42,6 +42,7 @@ public class LoginController{
     @FXML
     void login_btn(ActionEvent event) throws Exception {
 
+        App.setRoot("principal", "ELECTROCOLOMBIANO -Panel Principal de Gestión-");
     }
 
     @FXML
