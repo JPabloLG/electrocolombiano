@@ -14,7 +14,6 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        // Initialize the static stage and scene references
         stage = primaryStage;
 
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("login.fxml"));

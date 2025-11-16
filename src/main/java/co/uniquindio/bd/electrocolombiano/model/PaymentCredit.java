@@ -10,7 +10,8 @@ import java.util.List;
 
 public class PaymentCredit {
 
-    private  String payMentId;
     private List<Installment> installments;
+    private Payment payment;
+
 }
 
