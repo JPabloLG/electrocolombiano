@@ -1,0 +1,127 @@
+/* Estilo principal para el ComboBox */
+.combo-box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #2c3e50;
+    -fx-border-width: 0 0 2px 0;
+    -fx-border-radius: 0;
+    -fx-background-radius: 4px;
+    -fx-padding: 6px 12px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+    -fx-prompt-text-fill: #95a5a6;
+}
+
+/* Estilo cuando el ComboBox está abierto/focused */
+.combo-box:focused {
+    -fx-border-color: #3498db;
+    -fx-border-width: 0 0 2px 0;
+    -fx-background-color: #f8f9fa;
+    -fx-effect: dropshadow(gaussian, rgba(52, 152, 219, 0.3), 10, 0.2, 0, 0);
+}
+
+/* Estilo al pasar el mouse */
+.combo-box:hover {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #3498db;
+}
+
+/* Estilo de la flecha del ComboBox */
+.combo-box .arrow {
+    -fx-background-color: #2c3e50;
+    -fx-padding: 4px;
+    -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
+}
+
+.combo-box:hover .arrow {
+    -fx-background-color: #3498db;
+}
+
+.combo-box:focused .arrow {
+    -fx-background-color: #3498db;
+}
+
+/* Estilo de la lista desplegable */
+.combo-box .list-view {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.2, 0, 2);
+}
+
+/* Estilo de los items de la lista */
+.combo-box .list-cell {
+    -fx-background-color: white;
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 13px;
+    -fx-padding: 8px 12px;
+    -fx-border-color: transparent;
+}
+
+/* Item al pasar el mouse - Color suave gris */
+.combo-box .list-cell:hover {
+    -fx-background-color: #f8f9fa;
+    -fx-text-fill: #2c3e50;
+}
+
+/* Item seleccionado - Color muy suave azul/gris */
+.combo-box .list-cell:filled:selected {
+    -fx-background-color: #ecf0f1;
+    -fx-text-fill: #2c3e50;
+    -fx-font-weight: normal;
+}
+
+/* Item presionado */
+.combo-box .list-cell:filled:pressed {
+    -fx-background-color: #d5dbdb;
+    -fx-text-fill: #2c3e50;
+}
+
+/* Estilo del área del botón */
+.combo-box .combo-box-popup .list-view {
+    -fx-background-color: white;
+}
+
+.combo-box .combo-box-popup .list-cell {
+    -fx-background-color: white;
+    -fx-text-fill: #2c3e50;
+}
+
+/* Estilo cuando el ComboBox está deshabilitado */
+.combo-box:disabled {
+    -fx-background-color: #ecf0f1;
+    -fx-border-color: #bdc3c7;
+    -fx-text-fill: #95a5a6;
+    -fx-opacity: 0.7;
+}
+
+.combo-box:disabled .arrow {
+    -fx-background-color: #bdc3c7;
+}
+
+/* Estilo del texto mostrado en el ComboBox */
+.combo-box .text {
+    -fx-fill: #2c3e50;
+    -fx-font-size: 14px;
+}
+
+.combo-box:focused .text {
+    -fx-fill: #3498db;
+}
+
+/* Estilo para el prompt text */
+.combo-box .prompt-text {
+    -fx-fill: #95a5a6;
+    -fx-font-style: italic;
+}
+
+/* Separador entre items */
+.combo-box .list-cell {
+    -fx-border-color: #f0f0f0;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.combo-box .list-cell:last-child {
+    -fx-border-width: 0;
+}

@@ -1,0 +1,48 @@
+/* Estilo para los campos de texto */
+.text-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #2c3e50;
+    -fx-border-width: 0 0 2px 0;
+    -fx-border-radius: 0;
+    -fx-background-radius: 4px;
+    -fx-padding: 8px 12px;
+    -fx-font-size: 19px;
+    -fx-text-fill: #2c3e50;
+    -fx-prompt-text-fill: #95a5a6;
+}
+
+.text-field:focused {
+    -fx-border-color: #3498db;
+    -fx-border-width: 0 0 2px 0;
+    -fx-background-color: #f8f9fa;
+    -fx-effect: dropshadow(gaussian, rgba(52, 152, 219, 0.3), 10, 0.2, 0, 0);
+}
+
+.text-field:hover {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #3498db;
+}
+
+/* Estilo para las etiquetas */
+.label {
+    -fx-text-fill: #2c3e50;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+/* Estilo para el enlace "¿Olvidaste tu contraseña?" */
+.hyperlink {
+    -fx-text-fill: #3498db;
+    -fx-border-color: transparent;
+    -fx-underline: false;
+    -fx-font-size: 12px;
+}
+
+.hyperlink:hover {
+    -fx-text-fill: #2980b9;
+    -fx-underline: true;
+}
+
+.hyperlink:pressed {
+    -fx-text-fill: #21618c;
+}
