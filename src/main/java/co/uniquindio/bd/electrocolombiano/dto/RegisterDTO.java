@@ -1,9 +1,9 @@
 package co.uniquindio.bd.electrocolombiano.dto;
 
 
-import javax.management.relation.Role;
+import co.uniquindio.bd.electrocolombiano.model.Rol;
 
-public record RegisterDTO(String cedula , String userName, String fullName, Role role, String password ) {
+public record RegisterDTO(String cedula , String userName, String fullName, Rol role, String password ) {
 
     public RegisterDTO {
         if (userName == null || userName.isBlank())

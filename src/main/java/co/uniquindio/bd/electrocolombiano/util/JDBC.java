@@ -21,9 +21,9 @@ public class JDBC {
             Properties prop = new Properties();
             prop.load(input);
 
-            url = prop.getProperty("jdbc:sqlserver://localhost:1433/market");
-            user = prop.getProperty("elkin");
-            password = prop.getProperty("12Elkin12");
+            url = prop.getProperty("db.url");
+            user = prop.getProperty("db.username");
+            password = prop.getProperty("db.password");
 
             propertiesLoaded = true;
         } catch (Exception e) {
@@ -35,14 +35,14 @@ public class JDBC {
         loadProperties();
 
         try {
-            // Check if connection is valid
-            if (connection != null && !connection.isClosed() && connection.isValid(5)) {
-                return connection;
+            if (connection == null || connection.isClosed()) {
+
+                Class.forName("net.sourceforge.jtds.jdbc.Driver");
+
+                connection = DriverManager.getConnection(url, user, password);
             }
 
-            // Create a new connection if needed
-            connection = DriverManager.getConnection(url, user, password);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.err.println("DB connection failed: " + e.getMessage());
             e.printStackTrace();
         }
