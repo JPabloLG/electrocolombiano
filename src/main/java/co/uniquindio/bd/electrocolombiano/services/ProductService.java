@@ -23,7 +23,7 @@ public class ProductService {
         createProductDTO.setId(UUID.randomUUID().toString());
 
         ProductDTO product = new ProductDTO(createProductDTO.getId(), createProductDTO.getUnitPrice(),
-                createProductDTO.getPurchaseValue(), createProductDTO.getStock(),
+                createProductDTO.getPurchaseValue(), createProductDTO.getStock(), createProductDTO.getName(),
                 createProductDTO.getCategory());
         productDAO.save(product);
         return product;

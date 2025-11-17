@@ -10,6 +10,7 @@ import co.uniquindio.bd.electrocolombiano.dto.RegisterDTO;
 import co.uniquindio.bd.electrocolombiano.model.Rol;
 import co.uniquindio.bd.electrocolombiano.services.SystemUserService;
 import co.uniquindio.bd.electrocolombiano.util.JDBC;
+import co.uniquindio.bd.electrocolombiano.util.ShowAlert;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -50,6 +51,13 @@ public class RegisterController {
     @FXML
     private TextField txt_username;
 
+    public final ShowAlert showAlert = new ShowAlert();
+
+    @FXML
+    void btn_back(ActionEvent event) throws IOException {
+        App.setRoot("login", "ELECTROCOLOMBIANO -Inicio de Sesión-");
+    }
+
     @FXML
     void register_btn(ActionEvent event) throws IOException {
         try {
@@ -61,7 +69,7 @@ public class RegisterController {
 
             if (username.isEmpty() || password.isEmpty() || cedula.isEmpty() ||
                     fullname.isEmpty() || rolSeleccionado == null) {
-                mostrarAlerta("Error", "Todos los campos son obligatorios", Alert.AlertType.ERROR);
+                showAlert.mostrarAlerta("Error", "Todos los campos son obligatorios", Alert.AlertType.ERROR);
                 return;
             }
 
@@ -74,12 +82,12 @@ public class RegisterController {
 
             systemUserService.register(registerDTO);
 
-            mostrarAlerta("Éxito", "Usuario registrado correctamente", Alert.AlertType.INFORMATION);
+            showAlert.mostrarAlerta("Éxito", "Usuario registrado correctamente", Alert.AlertType.INFORMATION);
 
             App.setRoot("login", "ELECTROCOLOMBIANO -Inicio de Sesión-");
 
         } catch (Exception e) {
-            mostrarAlerta("Error", "Error al registrar usuario: " + e.getMessage(), Alert.AlertType.ERROR);
+            showAlert.mostrarAlerta("Error", "Error al registrar usuario: " + e.getMessage(), Alert.AlertType.ERROR);
             e.printStackTrace();
         }
     }
@@ -96,16 +104,5 @@ public class RegisterController {
         assert txt_fullName != null : "fx:id=\"txt_fullName\" was not injected: check your FXML file 'register.fxml'.";
         assert txt_password != null : "fx:id=\"txt_password\" was not injected: check your FXML file 'register.fxml'.";
         assert txt_username != null : "fx:id=\"txt_username\" was not injected: check your FXML file 'register.fxml'.";
-    }
-
-    /**
-     * Método para mostrar alertas
-     */
-    private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
     }
 }

@@ -6,8 +6,10 @@ import java.util.ResourceBundle;
 
 import co.uniquindio.bd.electrocolombiano.App;
 import co.uniquindio.bd.electrocolombiano.model.ElectronicStore;
+import co.uniquindio.bd.electrocolombiano.util.ShowAlert;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 
 public class PrincipalController {
@@ -25,11 +27,12 @@ public class PrincipalController {
     private Label txt_principal_currentUser;
 
     private final ElectronicStore store = ElectronicStore.getSingleton();
+    public final ShowAlert showAlert = new ShowAlert();
 
     @FXML
     void logout_btn(ActionEvent event) throws IOException {
         store.setCurrentUser(null);
-
+        showAlert.mostrarAlerta("Éxito", "Se cerró sesión correctamente", Alert.AlertType.INFORMATION);
         App.setRoot("login", "ELECTROCOLOMBIANO -Inicio de Sesión-");
     }
 

@@ -71,7 +71,7 @@ public class UserDAOImpl implements UserDAO{
             stmt.setString(1, cedula);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    System.out.println("✅ Usuario encontrado por cédula: " + cedula);
+                    System.out.println("Usuario encontrado por cédula: " + cedula);
                     System.out.println("   - Nombre: " + rs.getString("fullName"));
                     System.out.println("   - Usuario: " + rs.getString("userName"));
                     System.out.println("   - Rol: " + rs.getString("roleName"));

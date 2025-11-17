@@ -15,6 +15,7 @@ import co.uniquindio.bd.electrocolombiano.model.Rol;
 import co.uniquindio.bd.electrocolombiano.model.SystemUser;
 import co.uniquindio.bd.electrocolombiano.services.SystemUserService;
 import co.uniquindio.bd.electrocolombiano.util.JDBC;
+import co.uniquindio.bd.electrocolombiano.util.ShowAlert;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -44,6 +45,7 @@ public class CreateCustomerController {
 
     private final SystemUserService systemUserService;
     private final ElectronicStore store = ElectronicStore.getSingleton();
+    public final ShowAlert showAlert = new ShowAlert();
 
     public CreateCustomerController(){
         this.systemUserService = new SystemUserService(new UserDAOImpl(JDBC.getConnection()));
@@ -67,22 +69,18 @@ public class CreateCustomerController {
             systemUserService.register(customerDTO);
 
             System.out.println("Cliente creado: " + userName);
+            showAlert.mostrarAlerta("Éxito", "Cliente creado correctamente", Alert.AlertType.INFORMATION);
             App.setRoot("principal", "ELECTROCOLOMBIANO -Panel Principal de Gestión-");
 
         } catch (Exception e) {
             System.out.println("Error al iniciar sesión: " + e.getMessage());
-
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error de inicio de sesión");
-            alert.setHeaderText(null);
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
+            showAlert.mostrarAlerta("Error", "Error al crear el cliente", Alert.AlertType.ERROR);
         }
     }
 
     @FXML
     void selectPhoto(ActionEvent event) {
-
+        showAlert.mostrarAlerta("Error", "Esta funcionalidad está en desarrollo", Alert.AlertType.ERROR);
     }
 
     @FXML

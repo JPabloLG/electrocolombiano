@@ -13,11 +13,15 @@ import co.uniquindio.bd.electrocolombiano.services.ProductService;
 import co.uniquindio.bd.electrocolombiano.services.SaleService;
 import co.uniquindio.bd.electrocolombiano.services.SystemUserService;
 import co.uniquindio.bd.electrocolombiano.util.JDBC;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 
 public class CreateSaleController {
 
@@ -28,7 +32,16 @@ public class CreateSaleController {
     private URL location;
 
     @FXML
+    private VBox box_cantidadCuota;
+
+    @FXML
+    private VBox box_cuotaInicial;
+
+    @FXML
     private CheckBox checkCredit;
+
+    @FXML
+    private ComboBox<Integer> combo_cuotas;
 
     @FXML
     private TextField txt_cedulaClient;
@@ -41,12 +54,6 @@ public class CreateSaleController {
 
     @FXML
     private TextField txt_idProduct;
-
-    @FXML
-    private TextField txt_numberCuotes;
-
-    @FXML
-    private TextField txt_numberProducts;
 
     private final ElectronicStore store = ElectronicStore.getSingleton();
     private final SaleService saleService;
@@ -74,11 +81,6 @@ public class CreateSaleController {
 
     @FXML
     void finishSale_btn(ActionEvent event) throws IOException {
-
-
-
-
-
         App.setRoot("finishSale", "ELECTROCOLOMBIANO -Resumen de Venta-");
     }
 
@@ -102,7 +104,31 @@ public class CreateSaleController {
         assert txt_clienteEncontrado != null : "fx:id=\"txt_clienteEncontrado\" was not injected: check your FXML file 'createSale.fxml'.";
         assert txt_header_currentUser != null : "fx:id=\"txt_header_currentUser\" was not injected: check your FXML file 'createSale.fxml'.";
         assert txt_idProduct != null : "fx:id=\"txt_idProduct\" was not injected: check your FXML file 'createSale.fxml'.";
-        assert txt_numberCuotes != null : "fx:id=\"txt_numberCuotes\" was not injected: check your FXML file 'createSale.fxml'.";
-        assert txt_numberProducts != null : "fx:id=\"txt_numberProducts\" was not injected: check your FXML file 'createSale.fxml'.";
+
+        // Inicializar ComboBox con cuotas
+        combo_cuotas.getItems().addAll(12, 18, 24);
+
+        // Ocultar Y deshabilitar los VBox inicialmente
+        box_cantidadCuota.setVisible(false);
+        box_cantidadCuota.setDisable(true);
+        box_cuotaInicial.setVisible(false);
+        box_cuotaInicial.setDisable(true);
+
+        // Agregar listener al CheckBox para mostrar/ocultar los VBox
+        checkCredit.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            // Mostrar/ocultar Y habilitar/deshabilitar los VBox
+            box_cantidadCuota.setVisible(newValue);
+            box_cantidadCuota.setDisable(!newValue);
+            box_cuotaInicial.setVisible(newValue);
+            box_cuotaInicial.setDisable(!newValue);
+
+            // Deshabilitar/habilitar el ComboBox directamente
+            combo_cuotas.setDisable(!newValue);
+
+            if (!newValue) {
+                // Limpiar la selección del ComboBox cuando se desactiva el crédito
+                combo_cuotas.getSelectionModel().clearSelection();
+            }
+        });
     }
 }

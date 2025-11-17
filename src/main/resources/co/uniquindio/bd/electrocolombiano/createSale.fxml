@@ -3,6 +3,7 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
@@ -58,12 +59,9 @@
                     <HBox alignment="CENTER_LEFT" spacing="20">
                         <VBox spacing="6">
                             <Label style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="ID del Producto *" />
-                            <TextField fx:id="txt_idProduct" prefHeight="40" prefWidth="200" promptText="ID del producto" stylesheets="@../../../../styles/style_text_field.css" />
+                            <TextField fx:id="txt_idProduct" prefHeight="46.0" prefWidth="189.0" promptText="ID del producto" stylesheets="@../../../../styles/style_text_field.css" />
                         </VBox>
-                        <VBox spacing="6">
-                            <Label style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Cantidad *" />
-                            <TextField fx:id="txt_numberProducts" prefHeight="40" prefWidth="100" promptText="Cantidad" stylesheets="@../../../../styles/style_text_field.css" />
-                        </VBox>
+                        <VBox spacing="6" />
                         <Button onAction="#addProduct_btn" prefHeight="40" prefWidth="150" style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14; -fx-background-radius: 8; -fx-border-radius: 8; -fx-effect: dropshadow(gaussian, rgba(46, 204, 113, 0.4), 8, 0.3, 0, 2);" text="➕ Agregar Producto">
                             <cursor>
                                 <Cursor fx:constant="HAND" />
@@ -73,12 +71,18 @@
                         <VBox alignment="CENTER" spacing="5" style="-fx-padding: 5;">
                             <CheckBox fx:id="checkCredit" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #2c3e50; -fx-padding: 8;" text="💳 A Crédito" />
                         </VBox>
-                  <VBox prefHeight="87.0" prefWidth="143.0">
-                     <children>
-                        <Label style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Cantidad de Cuotas *" />
-                        <TextField fx:id="txt_numberCuotes" prefHeight="46.0" prefWidth="143.0" promptText="Cantidad" stylesheets="@../../../../styles/style_text_field.css" />
-                     </children>
-                  </VBox>
+                        <VBox fx:id="box_cantidadCuota" prefHeight="87.0" prefWidth="153.0">
+                            <children>
+                                <Label style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Cantidad de Cuotas *" />
+                                <ComboBox fx:id="combo_cuotas" prefHeight="51.0" prefWidth="171.0" promptText="Cuotas" stylesheets="@../../../../styles/style_combo_box.css" />
+                            </children>
+                        </VBox>
+                        <VBox fx:id="box_cuotaInicial" layoutX="661.0" layoutY="10.0" prefHeight="87.0" prefWidth="153.0">
+                            <children>
+                                <Label style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Cuota inicial *" />
+                                <TextField fx:id="txt_inicialCuota" prefHeight="40" prefWidth="100" promptText="inicial" stylesheets="@../../../../styles/style_text_field.css" />
+                            </children>
+                        </VBox>
                     </HBox>
                 </VBox>
 

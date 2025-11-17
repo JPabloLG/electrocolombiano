@@ -12,6 +12,7 @@ import co.uniquindio.bd.electrocolombiano.model.ElectronicStore;
 import co.uniquindio.bd.electrocolombiano.model.SystemUser;
 import co.uniquindio.bd.electrocolombiano.services.SystemUserService;
 import co.uniquindio.bd.electrocolombiano.util.JDBC;
+import co.uniquindio.bd.electrocolombiano.util.ShowAlert;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -23,6 +24,7 @@ public class LoginController {
 
     private final SystemUserService systemUserService;
     private final ElectronicStore store = ElectronicStore.getSingleton();
+    public final ShowAlert showAlert = new ShowAlert();
 
     public LoginController() {
         this.systemUserService = new SystemUserService(new UserDAOImpl(JDBC.getConnection()));
@@ -65,19 +67,13 @@ public class LoginController {
                     .build();
 
             store.setCurrentUser(systemUser);
-            System.out.println("Usuario inició sesión: " + systemUser.getFullName());
+            showAlert.mostrarAlerta("Éxito", "Se inició sesión correctamente", Alert.AlertType.INFORMATION);
             App.setRoot("principal", "ELECTROCOLOMBIANO -Panel Principal de Gestión-");
 
         } catch (Exception e) {
 
             System.out.println("Error al iniciar sesión: " + e.getMessage());
-
-
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error de inicio de sesión");
-            alert.setHeaderText(null);
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
+            showAlert.mostrarAlerta("Error", "Error al iniciar sesión", Alert.AlertType.ERROR);
         }
     }
 

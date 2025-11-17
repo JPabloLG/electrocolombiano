@@ -2,6 +2,8 @@ package co.uniquindio.bd.electrocolombiano.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,15 +17,16 @@ public class InstallmentDTO {
     private int  installmentCount;
     private BigDecimal installmentValue;
     private LocalDate installmentDate;
-    private PaymentDTO payment;
+    @Setter
+    private String paymentId;
 
-    public InstallmentDTO (String id, int installmentCount, BigDecimal installmentValue, LocalDate installmentDate, PaymentDTO payment) {
+    public InstallmentDTO (String id, int installmentCount, BigDecimal installmentValue, LocalDate installmentDate, String paymentId) {
 
         this.id = id;
         this.installmentCount = installmentCount;
         this.installmentValue = installmentValue;
         this.installmentDate = installmentDate;
-        this.payment = payment;
+        this.paymentId = paymentId;
         validateFields();
     }
 
@@ -34,7 +37,7 @@ public class InstallmentDTO {
         if (installmentValue.compareTo(BigDecimal.valueOf(0)) < 0)
             throw new IllegalArgumentException("El valor de cuotas debe ser mayor a 0");
 
-        if (payment == null)
-            throw new IllegalArgumentException("El pago es obligatorio");
+        if (paymentId == null)
+            throw new IllegalArgumentException("El id del pago es obligatorio");
     }
 }

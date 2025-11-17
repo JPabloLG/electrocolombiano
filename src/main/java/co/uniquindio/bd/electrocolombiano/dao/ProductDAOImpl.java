@@ -22,15 +22,16 @@ public class ProductDAOImpl implements ProductDAO {
 
     @Override
     public void save(ProductDTO product) {
-        String sql = "INSERT INTO Product (Id, UnitPrice, PurchaseValue, Stock, CategoryId) " +
-                "VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Product (id, unitPrice, purchaseValue, stock, name ,categoryId) " +
+                "VALUES (?, ?, ?, ?, ?,?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, product.getId());
             pstmt.setBigDecimal(2, product.getUnitPrice());
             pstmt.setBigDecimal(3, product.getPurchaseValue());
             pstmt.setInt(4, product.getStock());
-            pstmt.setInt(5, product.getCategory().getId());
+            pstmt.setString(5, product.getName());
+            pstmt.setInt(6, product.getCategory().getId());
 
             int rowsAffected = pstmt.executeUpdate();
 
@@ -45,8 +46,8 @@ public class ProductDAOImpl implements ProductDAO {
 
     @Override
     public void update(ProductDTO product) {
-        String sql = "UPDATE Product SET unit_price = ?, purchase_value = ?, " +
-                "stock = ?, category_id = ? WHERE id = ?";
+        String sql = "UPDATE Product SET unitPrice = ?, purchaseValue = ?, " +
+                "stock = ?, categoryId = ? WHERE id = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setBigDecimal(1, product.getUnitPrice());
@@ -86,10 +87,10 @@ public class ProductDAOImpl implements ProductDAO {
 
     @Override
     public ProductDTO findById(String id) {
-        String sql = "SELECT p.id, p.unit_price, p.purchase_value, p.stock, " +
-                "pc.id as category_id, pc.category_name, pc.iva, pc.profit_margin " +
+        String sql = "SELECT p.id, p.unitPrice, p.purchaseValue, p.stock, " +
+                "pc.id as categoryId, pc.categoryName, pc.iva, pc.profitMargin " +
                 "FROM Product p " +
-                "INNER JOIN ProductCategory pc ON p.category_id = pc.id " +
+                "INNER JOIN ProductCategory pc ON p.categoryId = pc.id " +
                 "WHERE p.id = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -110,10 +111,10 @@ public class ProductDAOImpl implements ProductDAO {
     @Override
     public List<ProductDTO> getAll() {
         List<ProductDTO> products = new ArrayList<>();
-        String sql = "SELECT p.id, p.unit_price, p.purchase_value, p.stock, " +
-                "pc.id as category_id, pc.category_name, pc.iva, pc.profit_margin " +
+        String sql = "SELECT p.id, p.unitPrice, p.purchaseValue, p.stock, " +
+                "pc.id as categoryId, pc.categoryName, pc.iva, pc.profitMargin " +
                 "FROM Product p " +
-                "INNER JOIN ProductCategory pc ON p.category_id = pc.id " +
+                "INNER JOIN ProductCategory pc ON p.categoryId = pc.id " +
                 "ORDER BY p.id";
 
         try (Statement stmt = connection.createStatement();
@@ -134,17 +135,17 @@ public class ProductDAOImpl implements ProductDAO {
     private ProductDTO mapResultSetToProductDTO(ResultSet rs) throws SQLException {
         // Crear CategoryDTO
         ProductCategoryDTO categoryDTO = ProductCategoryDTO.builder()
-                .id(rs.getInt("category_id"))
-                .categoryName(rs.getString("category_name"))
+                .id(rs.getInt("id"))
+                .categoryName(rs.getString("categoryName"))
                 .iva(rs.getBigDecimal("iva"))
-                .profitMargin(rs.getBigDecimal("profit_margin"))
+                .profitMargin(rs.getBigDecimal("profitMargin"))
                 .build();
 
         // Crear ProductDTO
         return ProductDTO.builder()
                 .id(rs.getString("id"))
-                .unitPrice(rs.getBigDecimal("unit_price"))
-                .purchaseValue(rs.getBigDecimal("purchase_value"))
+                .unitPrice(rs.getBigDecimal("unitPrice"))
+                .purchaseValue(rs.getBigDecimal("purchaseValue"))
                 .stock(rs.getInt("stock"))
                 .category(categoryDTO)
                 .build();
@@ -155,8 +156,8 @@ public class ProductDAOImpl implements ProductDAO {
      */
     public List<ProductDTO> findByCategory(int categoryId) {
         List<ProductDTO> products = new ArrayList<>();
-        String sql = "SELECT p.id, p.unit_price, p.purchase_value, p.stock, " +
-                "pc.id as category_id, pc.category_name, pc.iva, pc.profit_margin " +
+        String sql = "SELECT p.id, p.unitPrice, p.purchaseValue, p.stock, " +
+                "pc.id as categoryId, pc.category_name, pc.iva, pc.profit_margin " +
                 "FROM Product p " +
                 "INNER JOIN ProductCategory pc ON p.category_id = pc.id " +
                 "WHERE p.category_id = ? " +

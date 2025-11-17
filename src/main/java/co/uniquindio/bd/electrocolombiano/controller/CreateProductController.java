@@ -16,8 +16,10 @@ import co.uniquindio.bd.electrocolombiano.dto.ProductDTO;
 import co.uniquindio.bd.electrocolombiano.services.ProductService;
 import co.uniquindio.bd.electrocolombiano.services.SystemUserService;
 import co.uniquindio.bd.electrocolombiano.util.JDBC;
+import co.uniquindio.bd.electrocolombiano.util.ShowAlert;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -58,6 +60,7 @@ public class CreateProductController {
     private TextField txt_unitPrice;
     
     private final ProductService productService;
+    public final ShowAlert showAlert = new ShowAlert();
 
     public CreateProductController() {
         this.productService = new ProductService(new ProductDAOImpl(JDBC.getConnection()), new ProductCategoryDAOImpl(JDBC.getConnection()));
@@ -79,6 +82,11 @@ public class CreateProductController {
     }
 
     @FXML
+    void listProducts_btn(ActionEvent event) {
+
+    }
+
+    @FXML
     void saveProduct_btn(ActionEvent event) {
         String stock_text = txt_stock.getText();
         int stock =  Integer.parseInt(stock_text);
@@ -86,12 +94,21 @@ public class CreateProductController {
         BigDecimal unitPrice = new BigDecimal(unitPrice_text);
         String purchaseValue_text = txt_purchaseValue.getText();
         BigDecimal purchaseValue = new BigDecimal(purchaseValue_text);
+        String name = this.txt_nameProduct.getText();
         String categoryStr = combo_category.getValue();
         ProductCategoryDTO productCategoryDTO = productService.getCategory(categoryStr);
 
-        ProductDTO producto = new ProductDTO("", unitPrice, purchaseValue, stock, productCategoryDTO);
+        ProductDTO producto = new ProductDTO("", unitPrice, purchaseValue, stock, name ,productCategoryDTO);
 
         productService.createProduct(producto);
+        showAlert.mostrarAlerta("Éxito", "Producto creado correctamente", Alert.AlertType.INFORMATION);
+
+        txt_stock.clear();
+        txt_unitPrice.clear();
+        txt_purchaseValue.clear();
+        txt_nameProduct.clear();
+        txt_iva.clear();
+        txt_profitMargin.clear();
     }
 
     @FXML

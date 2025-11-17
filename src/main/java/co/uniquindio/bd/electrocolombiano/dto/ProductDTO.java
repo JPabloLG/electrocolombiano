@@ -17,9 +17,11 @@ public class ProductDTO {
     private BigDecimal unitPrice;
     private BigDecimal purchaseValue;
     private int stock;
+    private String name;
     private ProductCategoryDTO category;
 
-    public ProductDTO (String id, BigDecimal unitPrice, BigDecimal purchaseValue, int stock, ProductCategoryDTO category){
+
+    public ProductDTO (String id, BigDecimal unitPrice, BigDecimal purchaseValue, int stock, String name ,ProductCategoryDTO category){
         if (unitPrice.compareTo(BigDecimal.valueOf(0)) <= 0)
             throw new IllegalArgumentException("El valor por cada unidad debe ser mayor a 0");
 
@@ -37,5 +39,6 @@ public class ProductDTO {
         this.purchaseValue = purchaseValue;
         this.stock = stock;
         this.category = category;
+        this.name = name;
     }
 }

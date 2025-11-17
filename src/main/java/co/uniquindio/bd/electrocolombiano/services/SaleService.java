@@ -2,6 +2,7 @@ package co.uniquindio.bd.electrocolombiano.services;
 
 import co.uniquindio.bd.electrocolombiano.dao.SaleDAO;
 import co.uniquindio.bd.electrocolombiano.dao.UserDAO;
+import co.uniquindio.bd.electrocolombiano.dto.PaymentDTO;
 import co.uniquindio.bd.electrocolombiano.dto.ProductDTO;
 import co.uniquindio.bd.electrocolombiano.dto.SaleDTO;
 import co.uniquindio.bd.electrocolombiano.model.Product;
@@ -19,25 +20,31 @@ public class SaleService {
         this.saleDAO = saleDAO;
         this.userDAO = userDAO;
     }
-    
+
     public SaleDTO createSale(SaleDTO sale) throws Exception {
-        String idCustomer = sale.getCustomerId();
-        validateId(idCustomer);
         sale.setId(UUID.randomUUID().toString());
         sale.setDateSale(LocalDate.now());
-        //logica extra--//
 
-        if (sale.getProducts() != null && !sale.getProducts().isEmpty()) {
-            BigDecimal subtotal = BigDecimal.valueOf(0f);
-            for (ProductDTO p : sale.getProducts()) {
-                subtotal = subtotal.add(p.getPurchaseValue());
-            }
-            sale.setSubtotal(subtotal);
-            sale.setTotalPrice(subtotal); // por ahora total = subtotal
+        BigDecimal subtotal = BigDecimal.ZERO;
+        for (ProductDTO p : sale.getProducts()) {
+            subtotal = subtotal.add(p.getPurchaseValue());
         }
+        sale.setSubtotal(subtotal);
+        sale.setTotalPrice(subtotal);
+
+        // Guardar la venta en Sale
         saleDAO.save(sale);
 
-        return  new SaleDTO(idCustomer,sale.getDateSale(), sale.getEmployee(), sale.getCustomerId(), sale.getSubtotal(), sale.getTotalPrice());
+        for (ProductDTO p : sale.getProducts()) {
+            saleDAO.addProductToSale(sale.getId(), p.getId());
+        }
+
+        for (PaymentDTO paymentDTO : sale.getPayments()) {
+            PaymentDTO createdPayment = createPayment(paymentDTO);
+            saleDAO.addPaymentToSale(sale.getId(), createdPayment.getId());
+        }
+
+        return sale;
     }
 
     private void validateId(String idCustomer) throws Exception {

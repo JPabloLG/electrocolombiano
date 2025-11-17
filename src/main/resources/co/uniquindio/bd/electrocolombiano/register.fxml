@@ -32,7 +32,7 @@
                 <Font size="28.0" />
             </font>
         </PasswordField>
-        <Button fx:id="register_btn" layoutX="528.0" layoutY="537.0" mnemonicParsing="false" onAction="#register_btn" prefHeight="58.0" prefWidth="244.0" stylesheets="@../../../../styles/style_btn.css" text="Registrarme">
+        <Button fx:id="register_btn" layoutX="669.0" layoutY="537.0" mnemonicParsing="false" onAction="#register_btn" prefHeight="58.0" prefWidth="244.0" stylesheets="@../../../../styles/style_btn.css" text="Registrarme">
             <font>
                 <Font size="38.0" />
             </font>
@@ -48,5 +48,10 @@
             </font>
         </TextField>
         <ComboBox fx:id="combo_Role" layoutX="511.0" layoutY="450.0" prefHeight="41.0" prefWidth="280.0" promptText="Escoge tu Rol" stylesheets="@../../../../styles/style_combo_box.css" />
+        <Button layoutX="384.0" layoutY="537.0" mnemonicParsing="false" onAction="#btn_back" prefHeight="58.0" prefWidth="244.0" style="-fx-background-color: #95a5a6;" stylesheets="@../../../../styles/style_btn.css" text="Volver">
+            <font>
+                <Font size="38.0" />
+            </font>
+        </Button>
     </children>
 </AnchorPane>
