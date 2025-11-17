@@ -12,5 +12,7 @@ public interface ProductDAO {
     void delete(int id);
     ProductDTO findById(String id);
     List<ProductDTO> getAll();
+    boolean exists(String productId);
+    List<ProductDTO> findByCategory(int categoryId);
 
 }

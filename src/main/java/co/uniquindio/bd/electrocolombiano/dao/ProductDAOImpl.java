@@ -157,10 +157,10 @@ public class ProductDAOImpl implements ProductDAO {
     public List<ProductDTO> findByCategory(int categoryId) {
         List<ProductDTO> products = new ArrayList<>();
         String sql = "SELECT p.id, p.unitPrice, p.purchaseValue, p.stock, " +
-                "pc.id as categoryId, pc.category_name, pc.iva, pc.profit_margin " +
+                "pc.id as categoryId, pc.categoryName, pc.iva, pc.profitMargin " +
                 "FROM Product p " +
-                "INNER JOIN ProductCategory pc ON p.category_id = pc.id " +
-                "WHERE p.category_id = ? " +
+                "INNER JOIN ProductCategory pc ON p.categoryId = pc.id " +
+                "WHERE p.categoryId = ? " +
                 "ORDER BY p.id";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -247,10 +247,10 @@ public class ProductDAOImpl implements ProductDAO {
      */
     public List<ProductDTO> getLowStockProducts(int threshold) {
         List<ProductDTO> products = new ArrayList<>();
-        String sql = "SELECT p.id, p.unit_price, p.purchase_value, p.stock, " +
-                "pc.id as category_id, pc.category_name, pc.iva, pc.profit_margin " +
+        String sql = "SELECT p.id, p.unitPrice, p.purchaseValue, p.stock, " +
+                "pc.id as categoryId, pc.categoryName, pc.iva, pc.profitMargin " +
                 "FROM Product p " +
-                "INNER JOIN ProductCategory pc ON p.category_id = pc.id " +
+                "INNER JOIN ProductCategory pc ON p.categoryId = pc.id " +
                 "WHERE p.stock <= ? " +
                 "ORDER BY p.stock ASC";
 

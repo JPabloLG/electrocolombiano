@@ -148,10 +148,10 @@ public class PaymentDAOImpl implements PaymentDAO {
     @Override
     public List<PaymentDTO> findBySaleId(String saleId) {
         List<PaymentDTO> payments = new ArrayList<>();
-        String sql = "SELECT p.id, p.total_price, p.is_credit " +
-                "FROM payments p " +
-                "INNER JOIN sale_payments sp ON p.id = sp.payment_id " +
-                "WHERE sp.sale_id = ?";
+        String sql = "SELECT p.payMentId, p.totalPrice, p.isCredit " +
+                "FROM Payment p " +
+                "INNER JOIN Sale_Product ON p.payMentId = sp.payMentId " +
+                "WHERE sp.id = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, saleId);
@@ -172,12 +172,12 @@ public class PaymentDAOImpl implements PaymentDAO {
      * Mapear ResultSet a PaymentDTO
      */
     private PaymentDTO mapResultSetToPaymentDTO(ResultSet rs) throws SQLException {
-        String id = rs.getString("id");
-        boolean isCredit = rs.getBoolean("is_credit");
+        String id = rs.getString("payMentId");
+        boolean isCredit = rs.getBoolean("isCredit");
 
         PaymentDTO payment = PaymentDTO.builder()
                 .id(id)
-                .totalPrice(rs.getBigDecimal("total_price"))
+                .totalPrice(rs.getBigDecimal("totalPrice"))
                 .isCredit(isCredit)
                 .build();
 
@@ -195,7 +195,7 @@ public class PaymentDAOImpl implements PaymentDAO {
      */
     public List<PaymentDTO> getCreditPayments() {
         List<PaymentDTO> payments = new ArrayList<>();
-        String sql = "SELECT id, total_price, is_credit FROM payments WHERE is_credit = true";
+        String sql = "SELECT payMentId, totalPrice, isCredit FROM Payment WHERE isCredit = true";
 
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -214,9 +214,10 @@ public class PaymentDAOImpl implements PaymentDAO {
     /**
      * Obtener pagos de contado
      */
+    @Override
     public List<PaymentDTO> getCashPayments() {
         List<PaymentDTO> payments = new ArrayList<>();
-        String sql = "SELECT id, total_price, is_credit FROM payments WHERE is_credit = false";
+        String sql = "SELECT payMentId, totalPrice, isCredit FROM Payment WHERE isCredit = false";
 
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -236,7 +237,7 @@ public class PaymentDAOImpl implements PaymentDAO {
      * Asociar pago a una venta
      */
     public void associateToSale(String paymentId, String saleId) {
-        String sql = "INSERT INTO sale_payments (sale_id, payment_id) VALUES (?, ?)";
+        String sql = "INSERT INTO Sale (paymentId) VALUES (?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, saleId);

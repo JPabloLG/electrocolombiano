@@ -22,7 +22,7 @@ public class ProductCategoryDAOImpl implements ProductCategoryDAO {
 
     @Override
     public void save(ProductCategoryDTO productCategory) {
-        String sql = "INSERT INTO ProductCategory (CategoryName, Iva, ProfitMargin) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO ProductCategory (CategoryName, iva, profitMargin) VALUES (?, ?, ?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, productCategory.getCategoryName());
@@ -50,7 +50,7 @@ public class ProductCategoryDAOImpl implements ProductCategoryDAO {
 
     @Override
     public void update(ProductCategoryDTO productCategory) {
-        String sql = "UPDATE ProductCategory SET CategoryName = ?, Iva = ?, ProfitMargin = ? WHERE Id = ?";
+        String sql = "UPDATE ProductCategory SET categoryName = ?, iva = ?, profitMargin = ? WHERE id = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, productCategory.getCategoryName());
@@ -76,7 +76,7 @@ public class ProductCategoryDAOImpl implements ProductCategoryDAO {
             throw new RuntimeException("No se puede eliminar la categoría porque tiene productos asociados");
         }
 
-        String sql = "DELETE FROM ProductCategory WHERE Id = ?";
+        String sql = "DELETE FROM ProductCategory WHERE id = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, id);
@@ -94,7 +94,7 @@ public class ProductCategoryDAOImpl implements ProductCategoryDAO {
 
     @Override
     public ProductCategoryDTO findById(int id) {
-        String sql = "SELECT Id, CategoryName, Iva, ProfitMargin FROM ProductCategory WHERE Id = ?";
+        String sql = "SELECT id, categoryName, iva, profitMargin FROM ProductCategory WHERE id = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, id);
@@ -114,7 +114,7 @@ public class ProductCategoryDAOImpl implements ProductCategoryDAO {
     @Override
     public List<ProductCategoryDTO> getAll() {
         List<ProductCategoryDTO> categories = new ArrayList<>();
-        String sql = "SELECT Id, CategoryName, Iva, ProfitMargin FROM ProductCategory ORDER BY CategoryName";
+        String sql = "SELECT id, categoryName, iva, profitMargin FROM ProductCategory ORDER BY categoryName";
 
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -135,10 +135,10 @@ public class ProductCategoryDAOImpl implements ProductCategoryDAO {
      */
     private ProductCategoryDTO mapResultSetToProductCategoryDTO(ResultSet rs) throws SQLException {
         return ProductCategoryDTO.builder()
-                .id(rs.getInt("Id"))
-                .categoryName(rs.getString("CategoryName"))
-                .iva(rs.getBigDecimal("Iva"))
-                .profitMargin(rs.getBigDecimal("ProfitMargin"))
+                .id(rs.getInt("id"))
+                .categoryName(rs.getString("categoryName"))
+                .iva(rs.getBigDecimal("iva"))
+                .profitMargin(rs.getBigDecimal("profitMargin"))
                 .build();
     }
 
@@ -146,7 +146,7 @@ public class ProductCategoryDAOImpl implements ProductCategoryDAO {
      * Método adicional: Verificar si una categoría tiene productos asociados
      */
     private boolean hasAssociatedProducts(int categoryId) {
-        String sql = "SELECT COUNT(*) FROM Product WHERE CategoryId = ?";
+        String sql = "SELECT COUNT(*) FROM Product WHERE categoryId = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, categoryId);
@@ -167,7 +167,7 @@ public class ProductCategoryDAOImpl implements ProductCategoryDAO {
      * Método adicional: Buscar categoría por nombre
      */
     public ProductCategoryDTO findByName(String categoryName) {
-        String sql = "SELECT Id, CategoryName, Iva, ProfitMargin FROM ProductCategory WHERE CategoryName = ?";
+        String sql = "SELECT id, categoryName, iva, profitMargin FROM ProductCategory WHERE categoryName = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, categoryName);
@@ -188,7 +188,7 @@ public class ProductCategoryDAOImpl implements ProductCategoryDAO {
      * Método adicional: Verificar si existe una categoría
      */
     public boolean exists(int categoryId) {
-        String sql = "SELECT COUNT(*) FROM ProductCategory WHERE Id = ?";
+        String sql = "SELECT COUNT(*) FROM ProductCategory WHERE id = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, categoryId);
@@ -209,7 +209,7 @@ public class ProductCategoryDAOImpl implements ProductCategoryDAO {
      * Método adicional: Verificar si existe una categoría por nombre (para evitar duplicados)
      */
     public boolean existsByName(String categoryName) {
-        String sql = "SELECT COUNT(*) FROM ProductCategory WHERE CategoryName = ?";
+        String sql = "SELECT COUNT(*) FROM ProductCategory WHERE categoryName = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, categoryName);
@@ -230,7 +230,7 @@ public class ProductCategoryDAOImpl implements ProductCategoryDAO {
      * Método adicional: Obtener conteo de productos por categoría
      */
     public int getProductCount(int categoryId) {
-        String sql = "SELECT COUNT(*) FROM Product WHERE CategoryId = ?";
+        String sql = "SELECT COUNT(*) FROM Product WHERE categoryId = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, categoryId);
@@ -252,8 +252,8 @@ public class ProductCategoryDAOImpl implements ProductCategoryDAO {
      */
     public List<ProductCategoryDTO> getCategoriesWithHighestIva(int limit) {
         List<ProductCategoryDTO> categories = new ArrayList<>();
-        String sql = "SELECT Id, CategoryName, Iva, ProfitMargin FROM ProductCategory " +
-                "ORDER BY Iva DESC LIMIT ?";
+        String sql = "SELECT id, categoryName, iva, profitMargin FROM ProductCategory " +
+                "ORDER BY iva DESC LIMIT ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, limit);
@@ -275,8 +275,8 @@ public class ProductCategoryDAOImpl implements ProductCategoryDAO {
      */
     public List<ProductCategoryDTO> getCategoriesWithHighestProfitMargin(int limit) {
         List<ProductCategoryDTO> categories = new ArrayList<>();
-        String sql = "SELECT Id, CategoryName, Iva, ProfitMargin FROM ProductCategory " +
-                "ORDER BY ProfitMargin DESC LIMIT ?";
+        String sql = "SELECT id, categoryName, iva, profitMargin FROM ProductCategory " +
+                "ORDER BY profitMargin DESC LIMIT ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, limit);

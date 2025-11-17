@@ -21,12 +21,13 @@ public class UserDAOImpl implements UserDAO{
 
     @Override
     public void save(UserDTO user) {
-        String sql = "INSERT INTO SystemUser (cedula, fullName, userName, password, role_id) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO SystemUser (cedula, userName, password, fullName, role_id) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, user.getCedula());
-            stmt.setString(2, user.getFullName());
             stmt.setString(3, user.getUserName());
             stmt.setString(4, user.getPassword());
+            stmt.setString(2, user.getFullName());
+
 
             // Mapear nombre de rol a ID
             int roleId = mapearRolAId(user.getRole().getRoleName());
@@ -146,42 +147,57 @@ public class UserDAOImpl implements UserDAO{
     @Override
     public LinkedList<UserDTO> findAll() {
         LinkedList<UserDTO> users = new LinkedList<>();
-        /*LinkedList<UserDTO> students = new LinkedList<>();
-        String sql = "SELECT * FROM users";
+        String sql = "SELECT * FROM SystemUser";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();
+            Rol rol = new Rol(
+                    rs.getString("roleName"),
+                    rs.getInt("id")
+            );
             while (rs.next()) {
                 UserDTO student = new UserDTO(
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getString("user_id"),
-                        rs.getString("password")
+                        rs.getString("cedula"),
+                        rs.getString("fullName"),
+                        rs.getString("userName"),
+                        rs.getString("password"),
+                        rol
                 );
-                students.add(student);
+                users.add(student);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return students;*/
         return users;
     }
 
     @Override
     public void update(UserDTO user) {
-        /*String sql = "UPDATE users SET name = ?, email = ?, password = ? WHERE user_id = ?";
+        String sql = "UPDATE SystemUser SET userName = ?, password = ?, fullName = ? WHERE cedula = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, user.getName());
-            stmt.setString(2, user.getEmail());
-            stmt.setString(3, user.getPassword());
-            stmt.setString(4, user.getId());
+            stmt.setString(1, user.getUserName());
+            stmt.setString(2, user.getPassword());
+            stmt.setString(3, user.getFullName());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(String cedula) {
+        String sql = "DELETE FROM SysteUser WHERE cedula = ?";
 
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, cedula);
+
+            int rowsAffected = pstmt.executeUpdate();
+
+            if (rowsAffected == 0) {
+                throw new SQLException("Error al eliminar el usuario, usuario no encontrado con Cedula: " + cedula);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al eliminar el usuario: " + e.getMessage(), e);
+        }
     }
 }

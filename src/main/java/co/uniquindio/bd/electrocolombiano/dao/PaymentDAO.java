@@ -8,6 +8,8 @@ public interface PaymentDAO {
     void update(PaymentDTO payment);
     void delete(String id);
     PaymentDTO findById(String id);
+    List<PaymentDTO> getCreditPayments();
+    List<PaymentDTO> getCashPayments();
     List<PaymentDTO> getAll();
     List<PaymentDTO> findBySaleId(String saleId);
 }
