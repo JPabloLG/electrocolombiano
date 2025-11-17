@@ -2,6 +2,8 @@ package co.uniquindio.bd.electrocolombiano.model;
 
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Setter
 @Getter
 @Builder
@@ -12,8 +14,8 @@ public class ProductCategory {
 
     private int id;
     private String categoryName;
-    private double iva;
-    private double profitMargin;
+    private BigDecimal iva;
+    private BigDecimal profitMargin;
 
 
 }

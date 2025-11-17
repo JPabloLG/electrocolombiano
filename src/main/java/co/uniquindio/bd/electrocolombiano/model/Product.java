@@ -1,6 +1,9 @@
 package co.uniquindio.bd.electrocolombiano.model;
 
 import lombok.*;
+
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Builder
@@ -10,8 +13,8 @@ import lombok.*;
 public class Product {
 
     private String id;
-    private double unitPrice;
-    private double purchaseValue;
+    private BigDecimal unitPrice;
+    private BigDecimal purchaseValue;
     private int stock;
     private ProductCategory category;
 

@@ -3,6 +3,7 @@ import co.uniquindio.bd.electrocolombiano.model.Payment;
 
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -12,9 +13,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Sale {
+
     private String id;
     private LocalDate saleDate;
-    private SystemUser user;
+    private SystemUser customer;
+    private SystemUser employee;
+    private List<Payment> payments;
     private List<Product> products;
-    private List<Payment> pago;
+    private BigDecimal subtotal;
+    private BigDecimal totalPrice;
 }

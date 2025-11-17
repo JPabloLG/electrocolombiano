@@ -1,6 +1,7 @@
 package co.uniquindio.bd.electrocolombiano.services;
 
 import co.uniquindio.bd.electrocolombiano.dao.UserDAO;
+import co.uniquindio.bd.electrocolombiano.dto.CustomerDTO;
 import co.uniquindio.bd.electrocolombiano.dto.LoginDTO;
 import co.uniquindio.bd.electrocolombiano.dto.RegisterDTO;
 import co.uniquindio.bd.electrocolombiano.dto.UserDTO;
@@ -24,27 +25,21 @@ public class SystemUserService {
 
     public UserDTO login(LoginDTO loginDTO) throws Exception {
 
-        if (loginDTO.userName() == null || loginDTO.userName().isEmpty()) {
-            throw new Exception("El usuario no puede estar vacio");
-        }
-        if (loginDTO.password() == null || loginDTO.password().isBlank()) {
-            throw new Exception("El usuario no puede estar vacio");
-        }
 
-        UserDTO userDTO = userDAO.findByUserName(loginDTO.userName());
+        UserDTO userDTO = userDAO.findByUserName(loginDTO.getUserName());
 
         if (userDTO == null) {
             throw new Exception("El usuario no existe");
         }
 
         SystemUser systemUser = SystemUser.builder()
-                .cedula(userDTO.cedula())
-                .fullName(userDTO.fullName())
-                .userName(userDTO.userName())
-                .password(userDTO.password())
-                .role(userDTO.role())
+                .cedula(userDTO.getCedula())
+                .fullName(userDTO.getFullName())
+                .userName(userDTO.getUserName())
+                .password(userDTO.getPassword())
+                .role(userDTO.getRole())
                 .build();
-        if (!systemUser.getPassword().equals(loginDTO.password())) {
+        if (!systemUser.getPassword().equals(loginDTO.getPassword())) {
             throw new Exception("Contraseña incorrecta");
         }
 
@@ -58,20 +53,28 @@ public class SystemUserService {
     }
 
     public UserDTO register(RegisterDTO dto) throws Exception {
-        UserDTO userExistente = userDAO.findByUserName(dto.userName());
+        UserDTO userExistente = userDAO.findByUserName(dto.getUserName());
         if (userExistente != null) {
             throw new Exception("El nombre de usuario ya existe");
         }
         SystemUser nuevo = SystemUser.builder()
-                .cedula(dto.cedula())
-                .userName(dto.userName())
-                .password(dto.password())
-                .fullName(dto.fullName())
-                .role(dto.role())
+                .cedula(dto.getCedula())
+                .userName(dto.getUserName())
+                .password(dto.getPassword())
+                .fullName(dto.getFullName())
+                .role(dto.getRole())
                 .build();
-
-        return new UserDTO(nuevo.getCedula(),nuevo.getFullName(), nuevo.getUserName(),
+        UserDTO user = new UserDTO(nuevo.getCedula(),nuevo.getFullName(), nuevo.getUserName(),
                 nuevo.getPassword(),nuevo.getRole());
+        userDAO.save(user);
+        return user;
+    }
 
+    public UserDTO getUser(String cedula) throws Exception {
+        UserDTO user = userDAO.findByCedula(cedula);
+        if(user == null){
+            throw new Exception("El usuario no existe");
+        }
+        return user;
     }
 }

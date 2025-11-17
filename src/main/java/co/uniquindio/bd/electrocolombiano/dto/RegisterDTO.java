@@ -3,11 +3,36 @@ package co.uniquindio.bd.electrocolombiano.dto;
 
 import co.uniquindio.bd.electrocolombiano.model.Rol;
 
-public record RegisterDTO(String cedula , String userName, String fullName, Rol role, String password ) {
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-    public RegisterDTO {
+@Getter
+@Setter
+@Builder
+
+public class RegisterDTO{
+
+    public String cedula;
+    public String userName;
+    public String fullName;
+    public Rol role;
+    public String password;
+
+
+    public RegisterDTO (String userName, String password, String cedula, Rol role, String fullName) {
+        this.userName = userName;
+        this.password = password;
+        this.cedula = cedula;
+        this.role = role;
+        this.fullName = fullName;
+
+        validate();
+    }
+
+    public void validate (){
         if (userName == null || userName.isBlank())
-            throw new IllegalArgumentException("El usuario es obligatorio");
+            throw new IllegalArgumentException("El email es obligatorio");
 
         if (password == null || password.isBlank())
             throw new IllegalArgumentException("La contraseña es obligatoria");

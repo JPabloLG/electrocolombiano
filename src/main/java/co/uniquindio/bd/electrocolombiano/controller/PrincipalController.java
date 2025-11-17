@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import co.uniquindio.bd.electrocolombiano.App;
+import co.uniquindio.bd.electrocolombiano.model.ElectronicStore;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -23,9 +24,11 @@ public class PrincipalController {
     @FXML
     private Label txt_principal_currentUser;
 
+    private final ElectronicStore store = ElectronicStore.getSingleton();
+
     @FXML
     void logout_btn(ActionEvent event) throws IOException {
-
+        store.setCurrentUser(null);
 
         App.setRoot("login", "ELECTROCOLOMBIANO -Inicio de Sesión-");
     }
@@ -52,9 +55,10 @@ public class PrincipalController {
 
     @FXML
     void initialize() {
+        txt_header_currentUser.setText(store.getCurrentUser().getFullName());
+        txt_principal_currentUser.setText("PÁGINA PRINCIPAL DE " + store.getCurrentUser().getFullName());
         assert txt_header_currentUser != null : "fx:id=\"txt_header_currentUser\" was not injected: check your FXML file 'principal.fxml'.";
         assert txt_principal_currentUser != null : "fx:id=\"txt_principal_currentUser\" was not injected: check your FXML file 'principal.fxml'.";
-
     }
 
 }

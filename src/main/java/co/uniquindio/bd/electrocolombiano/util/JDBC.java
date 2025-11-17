@@ -33,21 +33,13 @@ public class JDBC {
 
     public static Connection getConnection() {
         loadProperties();
-
         try {
-            if (connection == null || connection.isClosed()) {
-
-                Class.forName("net.sourceforge.jtds.jdbc.Driver");
-
-                connection = DriverManager.getConnection(url, user, password);
-            }
-
+            Class.forName("net.sourceforge.jtds.jdbc.Driver");
+            return DriverManager.getConnection(url, user, password);
         } catch (Exception e) {
             System.err.println("DB connection failed: " + e.getMessage());
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-
-        return connection;
     }
 
     public static class TestConnection {

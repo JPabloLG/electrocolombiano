@@ -1,6 +1,9 @@
 package co.uniquindio.bd.electrocolombiano.model;
 
 import lombok.*;
+
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @ToString
@@ -10,8 +13,8 @@ import lombok.*;
 
 public class Payment {
 
-    private  String payMentId;
-    private  float totalPrice;
+    private  String id;
+    private BigDecimal totalPrice;
     private  boolean isCredit;
 
 }

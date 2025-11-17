@@ -1,15 +1,40 @@
 package co.uniquindio.bd.electrocolombiano.dto;
 
-public record ProductCategoryDTO(String categoryName,double iva, double profitMargin) {
+import lombok.Builder;
+import lombok.Getter;
 
-    public ProductCategoryDTO{
-        if(categoryName == null || categoryName.isBlank())
-            throw new IllegalArgumentException("El usuario es obligatorio");
+import java.math.BigDecimal;
 
-        if( iva<0.1)
-            throw new IllegalArgumentException("El valor del IVA fuente es obligatorio");
+@Getter
+@Builder(toBuilder = true)
 
-        if (profitMargin < 0.1)
-            throw new IllegalArgumentException("El valor del profitMargin es obligatorio");
+public class ProductCategoryDTO {
+    private int id;
+    private String categoryName;
+    private BigDecimal iva;
+    private BigDecimal profitMargin;
+
+    private ProductCategoryDTO(int id, String categoryName, BigDecimal iva, BigDecimal profitMargin) {
+        this.id = id;
+        this.categoryName = categoryName;
+        this.iva = iva;
+        this.profitMargin = profitMargin;
+
+        validate();
+    }
+
+    private void validate() {
+
+        if (categoryName == null || categoryName.isBlank()) {
+            throw new IllegalArgumentException("El nombre de la categoría es obligatorio");
+        }
+
+        if (iva.compareTo(BigDecimal.valueOf(0)) < 0.0) {
+            throw new IllegalArgumentException("El IVA no puede ser negativo");
+        }
+
+        if (profitMargin.compareTo(BigDecimal.valueOf(0)) < 0.0) {
+            throw new IllegalArgumentException("El margen de utilidad no puede ser negativo");
+        }
     }
 }
