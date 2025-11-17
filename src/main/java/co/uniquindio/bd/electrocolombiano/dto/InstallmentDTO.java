@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
+@Setter
 @Getter
 @Builder(toBuilder = true)
 
@@ -17,7 +17,6 @@ public class InstallmentDTO {
     private int  installmentCount;
     private BigDecimal installmentValue;
     private LocalDate installmentDate;
-    @Setter
     private String paymentId;
 
     public InstallmentDTO (String id, int installmentCount, BigDecimal installmentValue, LocalDate installmentDate, String paymentId) {

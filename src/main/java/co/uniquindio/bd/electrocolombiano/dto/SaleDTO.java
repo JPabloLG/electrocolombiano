@@ -20,6 +20,7 @@ public class SaleDTO {
     private LocalDate dateSale;
     private UserDTO employee;
     private String customerId;
+    private boolean isCredit;
 
     @Builder.Default
     private List<PaymentDTO> payments = new ArrayList<>();
@@ -32,7 +33,7 @@ public class SaleDTO {
 
     // Constructor personalizado (el que estabas usando)
     public SaleDTO(String id, LocalDate dateSale, UserDTO employee, String customerId,
-                   BigDecimal subtotal, BigDecimal totalPrice) {
+                   BigDecimal subtotal, BigDecimal totalPrice,  boolean isCredit) {
         this.id = id;
         this.dateSale = dateSale;
         this.employee = employee;
@@ -41,7 +42,7 @@ public class SaleDTO {
         this.products = new ArrayList<>();
         this.subtotal = subtotal;
         this.totalPrice = totalPrice;
-
+        this.isCredit = isCredit;
         validate();
     }
 
@@ -54,4 +55,6 @@ public class SaleDTO {
             throw new IllegalArgumentException("La cédula del cliente es obligatoria");
         }
     }
+
+
 }

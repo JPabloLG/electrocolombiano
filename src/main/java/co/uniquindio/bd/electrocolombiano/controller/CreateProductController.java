@@ -13,6 +13,7 @@ import co.uniquindio.bd.electrocolombiano.dao.ProductDAOImpl;
 import co.uniquindio.bd.electrocolombiano.dao.UserDAOImpl;
 import co.uniquindio.bd.electrocolombiano.dto.ProductCategoryDTO;
 import co.uniquindio.bd.electrocolombiano.dto.ProductDTO;
+import co.uniquindio.bd.electrocolombiano.model.ElectronicStore;
 import co.uniquindio.bd.electrocolombiano.services.ProductService;
 import co.uniquindio.bd.electrocolombiano.services.SystemUserService;
 import co.uniquindio.bd.electrocolombiano.util.JDBC;
@@ -61,6 +62,7 @@ public class CreateProductController {
     
     private final ProductService productService;
     public final ShowAlert showAlert = new ShowAlert();
+    private final ElectronicStore store = ElectronicStore.getSingleton();
 
     public CreateProductController() {
         this.productService = new ProductService(new ProductDAOImpl(JDBC.getConnection()), new ProductCategoryDAOImpl(JDBC.getConnection()));
@@ -113,6 +115,7 @@ public class CreateProductController {
 
     @FXML
     void initialize() {
+        txt_header_currentUser.setText(store.getCurrentUser().getFullName());
         assert combo_category != null : "fx:id=\"combo_category\" was not injected: check your FXML file 'createProduct.fxml'.";
         assert txt_clienteEncontrado != null : "fx:id=\"txt_clienteEncontrado\" was not injected: check your FXML file 'createProduct.fxml'.";
         assert txt_header_currentUser != null : "fx:id=\"txt_header_currentUser\" was not injected: check your FXML file 'createProduct.fxml'.";

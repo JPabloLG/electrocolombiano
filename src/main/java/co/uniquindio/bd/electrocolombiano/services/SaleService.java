@@ -15,35 +15,24 @@ import java.util.UUID;
 public class SaleService {
     private final SaleDAO saleDAO;
     private final UserDAO userDAO;
+    private final PaymentService paymentService;
 
-    public SaleService(SaleDAO saleDAO, UserDAO userDAO){
+    public SaleService(SaleDAO saleDAO, UserDAO userDAO, PaymentService paymentService) {
         this.saleDAO = saleDAO;
         this.userDAO = userDAO;
+        this.paymentService = paymentService;
     }
 
     public SaleDTO createSale(SaleDTO sale) throws Exception {
         sale.setId(UUID.randomUUID().toString());
         sale.setDateSale(LocalDate.now());
-
-        BigDecimal subtotal = BigDecimal.ZERO;
-        for (ProductDTO p : sale.getProducts()) {
-            subtotal = subtotal.add(p.getPurchaseValue());
-        }
-        sale.setSubtotal(subtotal);
-        sale.setTotalPrice(subtotal);
-
-        // Guardar la venta en Sale
+        validateId(sale.getCustomerId());
+        sale.setEmployee(sale.getEmployee());
+        sale.setCustomerId(sale.getCustomerId());
+        PaymentDTO paymentDTO = new PaymentDTO(UUID.randomUUID().toString(),sale.getTotalPrice(), sale.isCredit() , sale.getId());
         saleDAO.save(sale);
-
-        for (ProductDTO p : sale.getProducts()) {
-            saleDAO.addProductToSale(sale.getId(), p.getId());
-        }
-
-        for (PaymentDTO paymentDTO : sale.getPayments()) {
-            PaymentDTO createdPayment = createPayment(paymentDTO);
-            saleDAO.addPaymentToSale(sale.getId(), createdPayment.getId());
-        }
-
+        paymentService.createPayment(paymentDTO);
+        sale.setPayments(sale.getPayments());
         return sale;
     }
 

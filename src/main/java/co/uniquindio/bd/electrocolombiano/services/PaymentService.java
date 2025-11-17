@@ -1,5 +1,6 @@
 package co.uniquindio.bd.electrocolombiano.services;
 
+import co.uniquindio.bd.electrocolombiano.dao.InstallmentDAO;
 import co.uniquindio.bd.electrocolombiano.dao.PaymentDAO;
 import co.uniquindio.bd.electrocolombiano.dto.InstallmentDTO;
 import co.uniquindio.bd.electrocolombiano.dto.PaymentDTO;
@@ -17,64 +18,60 @@ import java.util.UUID;
 public class PaymentService {
 
     private final PaymentDAO paymentDAO;
+    private final InstallmentDAO installmentDAO;
 
-    public PaymentService(PaymentDAO paymentDAO) {
+    public PaymentService(PaymentDAO paymentDAO, InstallmentDAO installmentDAO) {
         this.paymentDAO=paymentDAO;
+        this.installmentDAO=installmentDAO;
     }
 
     public PaymentDTO createPayment(PaymentDTO paymentDTO) {
-        paymentDTO.setId(UUID.randomUUID().toString());
 
+
+        // 2. Convertir DTO → Entidad Payment
         Payment payment = new Payment(
                 paymentDTO.getId(),
                 paymentDTO.getTotalPrice(),
-                paymentDTO.isCredit()
+                paymentDTO.isCredit(),
+                paymentDTO.getSaleId()
         );
 
-        // Guardar el pago base
+        // 3. Guardar Payment en BD
         paymentDAO.save(paymentDTO);
 
-        if (paymentDTO.isCredit()) {
-            BigDecimal total = paymentDTO.getTotalPrice();
-            BigDecimal initialQuote = total.multiply(BigDecimal.valueOf(0.3)); // 30%
-            BigDecimal financed = total.multiply(BigDecimal.valueOf(0.7))
-                    .multiply(BigDecimal.valueOf(1.05)); // 70% + 5% interés
-
-            // La cantidad de cuotas viene del DTO
-            int installmentsCount = paymentDTO.getInstallments() != null
-                    ? paymentDTO.getInstallments().size()
-                    : 12; // opcional, pero ideal que siempre venga del DTO
-
-            BigDecimal monthlyValue = financed.divide(BigDecimal.valueOf(installmentsCount), 2, RoundingMode.HALF_UP);
-
-            List<InstallmentDTO> installmentDTOs = new ArrayList<>();
-            LocalDate dueDate = LocalDate.now().plusMonths(1); // primera cuota dentro de un mes
-
-            // Crear DTOs de cuotas
-            for (int i = 0; i < installmentsCount; i++) {
-                InstallmentDTO installmentDTO = new InstallmentDTO(
-                        UUID.randomUUID().toString(),
-                        i + 1,
-                        monthlyValue,
-                        dueDate.plusMonths(i),
-                        paymentDTO.getId()
-                );
-                installmentDTOs.add(installmentDTO);
-
-                Installment installment = new Installment();
-                installment.setId(installmentDTO.getId());
-                installment.setInstallmentCount(installmentDTO.getInstallmentCount());
-                installment.setInstallmentValue(installmentDTO.getInstallmentValue());
-                installment.setInstallmentDate(installmentDTO.getInstallmentDate());
-                installment.setPayment(payment);
-                installmentDAO.save(installment);
-            }
-
-            // Asignar la lista de cuotas al DTO para retornar al cliente
-            paymentDTO.setInstallments(installmentDTOs);
+        // 4. Si NO es crédito → terminar
+        if (!paymentDTO.isCredit()) {
+            return paymentDTO;
         }
 
-        // Retornar el PaymentDTO completo
+        // ==== 5. Si es crédito, generar cuotas ====
+        BigDecimal total = paymentDTO.getTotalPrice();
+        BigDecimal initialQuote = total.multiply(BigDecimal.valueOf(0.30)); // 30%
+        BigDecimal financed = total.multiply(BigDecimal.valueOf(0.70))      // 70%
+                .multiply(BigDecimal.valueOf(1.05));    // +5% intereses
+
+        int installmentsCount = paymentDTO.getInstallmentCount(); // <-- debe venir en el DTO
+        BigDecimal monthlyValue = financed.divide(BigDecimal.valueOf(installmentsCount), 2, RoundingMode.HALF_UP);
+
+        List<InstallmentDTO> installmentDTOs = new ArrayList<>();
+        LocalDate dueDate = LocalDate.now().plusMonths(1);
+
+        for (int i = 0; i < installmentsCount; i++) {
+
+
+            InstallmentDTO installmentDTO = new InstallmentDTO(
+                    UUID.randomUUID().toString(),
+                    i + 1,
+                    monthlyValue,
+                    dueDate.plusMonths(i),
+                    paymentDTO.getId() 
+            );
+
+            installmentDTOs.add(installmentDTO);
+            // 5.3 Guardar cuota en la BD
+            installmentDAO.save(installmentDTO);
+        }
+        paymentDTO.setInstallments(installmentDTOs);
         return paymentDTO;
     }
 

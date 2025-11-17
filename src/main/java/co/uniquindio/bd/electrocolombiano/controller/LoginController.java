@@ -60,6 +60,7 @@ public class LoginController {
             UserDTO userDTO = systemUserService.login(loginDTO);
 
             SystemUser systemUser = SystemUser.builder()
+                    .cedula(userDTO.getCedula())
                     .userName(userDTO.getUserName())
                     .password(userDTO.getPassword())
                     .fullName(userDTO.getFullName())

@@ -32,13 +32,23 @@ public class SaleDAOImpl implements SaleDAO {
 
     @Override
     public void save(SaleDTO sale) {
-        String sql = "INSERT INTO Sale (id, saleDate, employeeId, customerId, subtotal, totalPrice) " +
+        String sql = "INSERT INTO Sale (id, saleDate, employedId, userId, subtotal, totalPrice) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
 
         try {
             connection.setAutoCommit(false);
 
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+                System.out.println("=== DATOS DE LA VENTA ===");
+                System.out.println("ID: " + sale.getId());
+                System.out.println("Fecha: " + sale.getDateSale());
+                System.out.println("Empleado: " + (sale.getEmployee() != null ? sale.getEmployee().getCedula() : "NULL"));
+                System.out.println("Cliente: " + sale.getCustomerId());
+                System.out.println("Subtotal: " + sale.getSubtotal());
+                System.out.println("TotalPrice: " + sale.getTotalPrice());
+                System.out.println("=========================");
+
                 pstmt.setString(1, sale.getId());
                 pstmt.setDate(2, Date.valueOf(sale.getDateSale()));
                 pstmt.setString(3, sale.getEmployee().getCedula());
@@ -52,21 +62,12 @@ public class SaleDAOImpl implements SaleDAO {
                     throw new SQLException("Error al crear la venta, no se insertaron filas.");
                 }
 
-                // Insertar productos de la venta
                 saveSaleProducts(sale.getId(), sale.getProducts());
 
-                // Insertar pagos de la venta
                 for (PaymentDTO payment : sale.getPayments()) {
                     paymentDAO.save(payment);
                 }
 
-                // Actualizar stock de productos
-                //Revisar este fragmento, porque puede generar inconsistencias si hay errores
-                /*
-                --
-                --
-                --
-                */
                 for (ProductDTO product : sale.getProducts()) {
                     updateProductStock(product.getId(), product.getStock());
                 }
@@ -93,16 +94,13 @@ public class SaleDAOImpl implements SaleDAO {
      * Guarda los productos asociados a una venta en la tabla intermedia
      */
     private void saveSaleProducts(String saleId, List<ProductDTO> products) throws SQLException {
-        String sql = "INSERT INTO Sale_Product (saleId, productId, quantity, unitPrice) " +
-                "VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Sale_Product (saleId, productId) " +
+                "VALUES (?, ?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             for (ProductDTO product : products) {
                 pstmt.setString(1, saleId);
                 pstmt.setString(2, product.getId());
-                pstmt.setInt(3, product.getStock());
-                //Revisar este fragmento
-                pstmt.setBigDecimal(4, product.getUnitPrice());
                 pstmt.addBatch();
             }
             pstmt.executeBatch();
@@ -130,7 +128,7 @@ public class SaleDAOImpl implements SaleDAO {
 
     @Override
     public void update(SaleDTO sale) {
-        String sql = "UPDATE Sale SET dateSale = ?, employeeId = ?, customerId = ?, " +
+        String sql = "UPDATE Sale SET dateSale = ?, employedId = ?, customerId = ?, " +
                 "subtotal = ?, totalPrice = ? WHERE id = ?";
 
         try {
@@ -240,7 +238,7 @@ public class SaleDAOImpl implements SaleDAO {
 
     @Override
     public SaleDTO findById(String id) {
-        String sql = "SELECT s.id, s.dateSale, s.employeeId, s.customerId, s.subtotal, s.totalPrice " +
+        String sql = "SELECT s.id, s.dateSale, s.employedId, s.customerId, s.subtotal, s.totalPrice " +
                 "FROM Sale s WHERE s.id = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -314,7 +312,7 @@ public class SaleDAOImpl implements SaleDAO {
     @Override
     public List<SaleDTO> getAll() {
         List<SaleDTO> sales = new ArrayList<>();
-        String sql = "SELECT s.id, s.dateSale, s.employeeId, s.customerId, s.subtotal, s.totalPrice " +
+        String sql = "SELECT s.id, s.dateSale, s.employedId, s.customerId, s.subtotal, s.totalPrice " +
                 "FROM Sale s ORDER BY s.dateSale DESC";
 
         try (Statement stmt = connection.createStatement();
@@ -379,7 +377,7 @@ public class SaleDAOImpl implements SaleDAO {
     @Override
     public List<SaleDTO> findByCustomerId(String customerId) {
         List<SaleDTO> sales = new ArrayList<>();
-        String sql = "SELECT s.id, s.dateSale, s.employeeId, s.customerId, s.subtotal, s.totalPrice " +
+        String sql = "SELECT s.id, s.dateSale, s.employedId, s.customerId, s.subtotal, s.totalPrice " +
                 "FROM Sale s WHERE s.customerId = ? ORDER BY s.dateSale DESC";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -400,8 +398,8 @@ public class SaleDAOImpl implements SaleDAO {
     @Override
     public List<SaleDTO> findByEmployeeId(String employeeId) {
         List<SaleDTO> sales = new ArrayList<>();
-        String sql = "SELECT s.id, s.dateSale, s.employeeId, s.customerId, s.subtotal, s.totalPrice " +
-                "FROM Sale s WHERE s.employeeId = ? ORDER BY s.dateSale DESC";
+        String sql = "SELECT s.id, s.dateSale, s.employedId, s.customerId, s.subtotal, s.totalPrice " +
+                "FROM Sale s WHERE s.employedId = ? ORDER BY s.dateSale DESC";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, employeeId);
@@ -421,7 +419,7 @@ public class SaleDAOImpl implements SaleDAO {
     @Override
     public List<SaleDTO> findByDateRange(LocalDate startDate, LocalDate endDate) {
         List<SaleDTO> sales = new ArrayList<>();
-        String sql = "SELECT s.id, s.dateSale, s.employeeId, s.customerId, s.subtotal, s.totalPrice " +
+        String sql = "SELECT s.id, s.dateSale, s.employedId, s.customerId, s.subtotal, s.totalPrice " +
                 "FROM Sale s WHERE s.dateSale BETWEEN ? AND ? ORDER BY s.dateSale DESC";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {

@@ -86,15 +86,15 @@ public class ProductDAOImpl implements ProductDAO {
     }
 
     @Override
-    public ProductDTO findById(String id) {
-        String sql = "SELECT p.id, p.unitPrice, p.purchaseValue, p.stock, " +
+    public ProductDTO findByName(String name) {
+        String sql = "SELECT p.id, p.unitPrice, p.purchaseValue, p.stock, p.name, " +
                 "pc.id as categoryId, pc.categoryName, pc.iva, pc.profitMargin " +
                 "FROM Product p " +
                 "INNER JOIN ProductCategory pc ON p.categoryId = pc.id " +
-                "WHERE p.id = ?";
+                "WHERE p.name = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, id);
+            pstmt.setString(1, name);
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
@@ -102,7 +102,7 @@ public class ProductDAOImpl implements ProductDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error al buscar el producto por ID: " + e.getMessage(), e);
+            throw new RuntimeException("Error al buscar el producto por nombre: " + e.getMessage(), e); // Cambié el mensaje
         }
 
         return null;
@@ -135,7 +135,7 @@ public class ProductDAOImpl implements ProductDAO {
     private ProductDTO mapResultSetToProductDTO(ResultSet rs) throws SQLException {
         // Crear CategoryDTO
         ProductCategoryDTO categoryDTO = ProductCategoryDTO.builder()
-                .id(rs.getInt("id"))
+                .id(rs.getInt("categoryId"))
                 .categoryName(rs.getString("categoryName"))
                 .iva(rs.getBigDecimal("iva"))
                 .profitMargin(rs.getBigDecimal("profitMargin"))
@@ -144,6 +144,7 @@ public class ProductDAOImpl implements ProductDAO {
         // Crear ProductDTO
         return ProductDTO.builder()
                 .id(rs.getString("id"))
+                .name(rs.getString("name"))
                 .unitPrice(rs.getBigDecimal("unitPrice"))
                 .purchaseValue(rs.getBigDecimal("purchaseValue"))
                 .stock(rs.getInt("stock"))

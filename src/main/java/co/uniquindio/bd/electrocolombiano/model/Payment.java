@@ -16,5 +16,6 @@ public class Payment {
     private  String id;
     private BigDecimal totalPrice;
     private  boolean isCredit;
+    private  String saleId;
 
 }

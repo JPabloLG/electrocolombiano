@@ -32,7 +32,7 @@ public class UserDTO{
             throw new IllegalArgumentException("El email es obligatorio");
 
         if (cedula == null || cedula.isBlank())
-            throw new IllegalArgumentException("El cedula es obligatoria");
+            throw new IllegalArgumentException("La cedula es obligatoria");
 
         if (role == null)
             throw new IllegalArgumentException("El role es obligatoria");

@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import co.uniquindio.bd.electrocolombiano.App;
+import co.uniquindio.bd.electrocolombiano.model.ElectronicStore;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -32,6 +33,8 @@ public class FinishSaleController {
     @FXML
     private Label txt_total;
 
+    private final ElectronicStore store = ElectronicStore.getSingleton();
+
 
     @FXML
     void back_btn(ActionEvent event) throws IOException {
@@ -50,6 +53,7 @@ public class FinishSaleController {
 
     @FXML
     void initialize() {
+        txt_header_currentUser.setText(store.getCurrentUser().getFullName());
         assert txt_cedula != null : "fx:id=\"txt_cedula\" was not injected: check your FXML file 'finishSale.fxml'.";
         assert txt_header_currentUser != null : "fx:id=\"txt_header_currentUser\" was not injected: check your FXML file 'finishSale.fxml'.";
         assert txt_name != null : "fx:id=\"txt_name\" was not injected: check your FXML file 'finishSale.fxml'.";

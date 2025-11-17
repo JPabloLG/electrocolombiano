@@ -44,4 +44,12 @@ public class ProductService {
         }
         return productCategoryDTO;
     }
+    
+    public ProductDTO findByName(String productName){
+        ProductDTO productDTO = productDAO.findByName(productName);
+        if(productDTO==null){
+            throw new RuntimeException("Product not found");
+        }
+        return productDTO;
+    }
 }

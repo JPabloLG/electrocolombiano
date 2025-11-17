@@ -19,7 +19,6 @@ public class ProductCategoryDTO {
         this.categoryName = categoryName;
         this.iva = iva;
         this.profitMargin = profitMargin;
-
         validate();
     }
 

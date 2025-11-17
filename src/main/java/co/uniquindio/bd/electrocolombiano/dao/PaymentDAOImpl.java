@@ -25,12 +25,13 @@ public class PaymentDAOImpl implements PaymentDAO {
 
     @Override
     public void save(PaymentDTO payment) {
-        String sql = "INSERT INTO Payment (payMentId, totalPrice, isCredit) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Payment (payMentId, totalPrice, isCredit, saleId) VALUES (?, ?, ?,?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, payment.getId());
             pstmt.setBigDecimal(2, payment.getTotalPrice());
             pstmt.setBoolean(3, payment.isCredit());
+            pstmt.setString(4, payment.getSaleId());
 
             int rowsAffected = pstmt.executeUpdate();
 
