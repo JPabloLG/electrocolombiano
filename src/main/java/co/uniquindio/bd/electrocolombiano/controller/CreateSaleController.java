@@ -11,6 +11,9 @@ import co.uniquindio.bd.electrocolombiano.App;
 import co.uniquindio.bd.electrocolombiano.dao.*;
 import co.uniquindio.bd.electrocolombiano.dto.*;
 import co.uniquindio.bd.electrocolombiano.model.ElectronicStore;
+import co.uniquindio.bd.electrocolombiano.model.Product;
+import co.uniquindio.bd.electrocolombiano.model.Sale;
+import co.uniquindio.bd.electrocolombiano.model.SystemUser;
 import co.uniquindio.bd.electrocolombiano.services.PaymentService;
 import co.uniquindio.bd.electrocolombiano.services.ProductService;
 import co.uniquindio.bd.electrocolombiano.services.SaleService;
@@ -89,40 +92,86 @@ public class CreateSaleController {
         String nameProduct = txt_nameProduct.getText().trim();
 
         if (nameProduct.isEmpty()) {
-            mostrarAlerta("Error", "Por favor ingrese un ID de producto");
+            mostrarAlerta("Error", "Por favor ingrese un nombre de producto");
             return;
         }
-            // Buscar el producto por ID usando el DAO
-            ProductDTO product = productService.findByName(nameProduct);
 
-            if (product != null) {
-                // Verificar stock
-                if (product.getStock() <= 0) {
-                    txt_productFind.setText("❌ Producto sin stock disponible");
-                    txt_productFind.setStyle("-fx-text-fill: #e74c3c;");
+        // Buscar el producto por nombre
+        ProductDTO product = productService.findByName(nameProduct);
+
+        if (product != null) {
+            // Verificar stock
+            if (product.getStock() <= 0) {
+                txt_productFind.setText("❌ Producto sin stock disponible");
+                txt_productFind.setStyle("-fx-text-fill: #e74c3c;");
+                return;
+            }
+
+            // Buscar si el producto ya está en la lista
+            ProductDTO productoExistente = buscarProductoEnLista(product.getId());
+
+            if (productoExistente != null) {
+                // Ya existe: incrementar cantidad
+                int nuevaCantidad = productoExistente.getQuantity() + 1;
+
+                // Verificar que no exceda el stock
+                if (nuevaCantidad > product.getStock()) {
+                    mostrarAlerta("Error", "Stock insuficiente. Disponible: " + product.getStock());
                     return;
                 }
 
-                // Agregar producto a la lista
-                productosSeleccionados.add(product);
+                productoExistente.setQuantity(nuevaCantidad);
 
-                // Calcular subtotal y total
-                subtotal = subtotal.add(product.getUnitPrice());
-                total = calcularTotalConIVA();
-
-                // Actualizar interfaz
-                txt_productFind.setText("✓ " + product.getName() + " - $" + product.getUnitPrice());
-                txt_productFind.setStyle("-fx-text-fill: #27ae60;");
-
-                // Limpiar campo
-                txt_nameProduct.clear();
-
-                mostrarAlerta("Éxito", "Producto agregado: " + product.getName());
+                txt_productFind.setText("✓ " + product.getName() + " (Cantidad: " + nuevaCantidad + ")");
 
             } else {
-                txt_productFind.setText("❌ Producto no encontrado");
-                txt_productFind.setStyle("-fx-text-fill: #e74c3c;");
+                // No existe: agregar nuevo con cantidad = 1
+                ProductDTO productoParaVenta = product.toBuilder()
+                        .quantity(1)
+                        .build();
+
+                productosSeleccionados.add(productoParaVenta);
+
+                txt_productFind.setText("✓ " + product.getName() + " (Cantidad: 1)");
             }
+
+            // Recalcular totales
+            subtotal = calcularSubtotal();
+            total = calcularTotalConIVA();
+
+            txt_productFind.setStyle("-fx-text-fill: #27ae60;");
+            txt_nameProduct.clear();
+
+            mostrarAlerta("Éxito", "Producto agregado: " + product.getName() +
+                    "\nCantidad: " + (productoExistente != null ? productoExistente.getQuantity() : 1) +
+                    "\nSubtotal: $" + String.format("%,.2f", subtotal) +
+                    "\nTotal con IVA: $" + String.format("%,.2f", total));
+
+        } else {
+            txt_productFind.setText("❌ Producto no encontrado");
+            txt_productFind.setStyle("-fx-text-fill: #e74c3c;");
+        }
+    }
+
+    private ProductDTO buscarProductoEnLista(String productId) {
+        for (ProductDTO producto : productosSeleccionados) {
+            if (producto.getId().equals(productId)) {
+                return producto;
+            }
+        }
+        return null;
+    }
+
+    private BigDecimal calcularSubtotal() {
+        BigDecimal subtotalCalculado = BigDecimal.ZERO;
+
+        for (ProductDTO producto : productosSeleccionados) {
+            BigDecimal precioProducto = producto.getUnitPrice()
+                    .multiply(BigDecimal.valueOf(producto.getQuantity()));
+            subtotalCalculado = subtotalCalculado.add(precioProducto);
+        }
+
+        return subtotalCalculado;
     }
 
     @FXML
@@ -147,17 +196,20 @@ public class CreateSaleController {
             // Determinar si es crédito
             boolean esCredito = checkCredit.isSelected();
 
+            UserDTO user = new UserDTO(store.getCurrentUser().getCedula(), store.getCurrentUser().getFullName(), store.getCurrentUser().getUserName(), store.getCurrentUser().getPassword(), store.getCurrentUser().getRole());
+            System.out.println(user);
+            UserDTO cliente = systemUserService.getUser(txt_cedulaClient.getText());
+
             // Validar campos de crédito si es necesario
             if (esCredito) {
                 if (combo_cuotas.getValue() == null || txt_inicialCuota.getText().trim().isEmpty()) {
                     mostrarAlerta("Error", "Para venta a crédito debe seleccionar cuotas e ingresar cuota inicial");
                     return;
+                }else{
+                    txt_inicialCuota.setText(txt_inicialCuota.getText().trim());
+                    combo_cuotas.getValue();
                 }
             }
-
-            UserDTO user = new UserDTO(store.getCurrentUser().getCedula(), store.getCurrentUser().getFullName(), store.getCurrentUser().getUserName(), store.getCurrentUser().getPassword(), store.getCurrentUser().getRole());
-            System.out.println(user);
-            UserDTO cliente = systemUserService.getUser(txt_cedulaClient.getText());
             // Crear el DTO de la venta usando el builder
             SaleDTO sale = SaleDTO.builder()
                     .employee(user) // Empleado actual
@@ -169,8 +221,29 @@ public class CreateSaleController {
                     .payments(new ArrayList<>())
                     .build();
 
-
             SaleDTO ventaCreada = saleService.createSale(sale);
+
+            UserDTO user1 = systemUserService.getUser(ventaCreada.getCustomerId());
+
+            SystemUser systemUser1 = SystemUser.builder()
+                    .userName(user1.getCedula())
+                    .cedula(user1.getCedula()).
+                    role(user1.role).fullName(user1.getFullName()).
+                    password(user1.getPassword()).build();
+
+            Sale saleEnt = Sale.builder()
+                    .id(ventaCreada.getId())
+                    .saleDate(ventaCreada.getDateSale())
+                    .customer(systemUser1)
+                    .employee(store.getCurrentUser())
+                    .payments(new ArrayList<>())
+                    .products(new ArrayList<>(productosSeleccionados))
+                    .subtotal(ventaCreada.getSubtotal())
+                    .totalPrice(ventaCreada.getTotalPrice())
+                    .isCredit(ventaCreada.isCredit())
+                    .build();
+
+            store.setSale(saleEnt);
 
             // Mostrar mensaje de éxito
             mostrarAlerta("Éxito", "Venta creada exitosamente\nID: " + ventaCreada.getId() +
@@ -201,9 +274,17 @@ public class CreateSaleController {
         try {
             UserDTO user = systemUserService.getUserDAO().findByCedula(cedula);
             if (user != null) {
-                clienteEncontrado = user;
-                txt_clienteEncontrado.setText("✓ Cliente: " + user.getFullName());
-                txt_clienteEncontrado.setStyle("-fx-text-fill: #27ae60;");
+                // VERIFICAR QUE EL ROL SEA CLIENTE (usando String)
+                if ("CLIENTE".equals(user.getRole().getRoleName())) {
+                    clienteEncontrado = user;
+                    txt_clienteEncontrado.setText("✓ Cliente: " + user.getUserName());
+                    txt_clienteEncontrado.setStyle("-fx-text-fill: #27ae60;");
+                } else {
+                    clienteEncontrado = null;
+                    txt_clienteEncontrado.setText("❌ La cédula no pertenece a un cliente");
+                    txt_clienteEncontrado.setStyle("-fx-text-fill: #e74c3c;");
+                    mostrarAlerta("Error", "La cédula pertenece a un " + user.getRole().getRoleName() + ", no a un cliente");
+                }
             } else {
                 clienteEncontrado = null;
                 txt_clienteEncontrado.setText("❌ Cliente no encontrado");

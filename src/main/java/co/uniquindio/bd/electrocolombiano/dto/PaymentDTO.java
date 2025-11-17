@@ -19,6 +19,7 @@ public class PaymentDTO {
     private BigDecimal totalPrice;
     private boolean isCredit;
     private String saleId;
+    private String installmentCount;
 
     @Builder.Default
     private List<InstallmentDTO> installments = new ArrayList<>();

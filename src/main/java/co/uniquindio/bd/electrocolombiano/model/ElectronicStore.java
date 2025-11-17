@@ -9,6 +9,7 @@ import lombok.Setter;
 public class ElectronicStore {
     private static ElectronicStore singleton;
     private SystemUser currentUser;
+    private Sale sale;
 
     public static ElectronicStore getSingleton() {
         if(singleton == null){

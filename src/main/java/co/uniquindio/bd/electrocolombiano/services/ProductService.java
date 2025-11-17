@@ -52,4 +52,12 @@ public class ProductService {
         }
         return productDTO;
     }
+
+    public List<ProductDTO> findByCategory(String categoryName){
+        List<ProductDTO> productDTO = productDAO.findByCategory(categoryName);
+        if(productDTO.isEmpty()){
+            throw new RuntimeException("No hay productos en esta categoria");
+        }
+        return productDTO;
+    }
 }

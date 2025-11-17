@@ -47,6 +47,7 @@ public class SaleDAOImpl implements SaleDAO {
                 System.out.println("Cliente: " + sale.getCustomerId());
                 System.out.println("Subtotal: " + sale.getSubtotal());
                 System.out.println("TotalPrice: " + sale.getTotalPrice());
+                System.out.println("Productos: " + (sale.getProducts() != null ? sale.getProducts().size() : 0));
                 System.out.println("=========================");
 
                 pstmt.setString(1, sale.getId());
@@ -62,20 +63,30 @@ public class SaleDAOImpl implements SaleDAO {
                     throw new SQLException("Error al crear la venta, no se insertaron filas.");
                 }
 
+                // Guardar productos de la venta
                 saveSaleProducts(sale.getId(), sale.getProducts());
 
-                for (PaymentDTO payment : sale.getPayments()) {
-                    paymentDAO.save(payment);
+                // Guardar pagos si existen
+                if (sale.getPayments() != null && !sale.getPayments().isEmpty()) {
+                    for (PaymentDTO payment : sale.getPayments()) {
+                        paymentDAO.save(payment);
+                    }
                 }
 
+                // ✅ CORRECCIÓN: Usar quantity en lugar de stock
                 for (ProductDTO product : sale.getProducts()) {
-                    updateProductStock(product.getId(), product.getStock());
+                    System.out.println("Actualizando stock de: " + product.getName() +
+                            " | Stock actual: " + product.getStock() +
+                            " | Cantidad a restar: " + product.getQuantity());
+                    updateProductStock(product.getId(), product.getQuantity());
                 }
 
                 connection.commit();
+                System.out.println("✓ Venta guardada exitosamente");
 
             } catch (SQLException e) {
                 connection.rollback();
+                System.err.println("✗ Error en transacción, realizando rollback");
                 throw e;
             }
 
@@ -94,16 +105,20 @@ public class SaleDAOImpl implements SaleDAO {
      * Guarda los productos asociados a una venta en la tabla intermedia
      */
     private void saveSaleProducts(String saleId, List<ProductDTO> products) throws SQLException {
-        String sql = "INSERT INTO Sale_Product (saleId, productId) " +
-                "VALUES (?, ?)";
+        String sql = "INSERT INTO Sale_Product (saleId, productId, quantity) " +
+                "VALUES (?, ?, ?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             for (ProductDTO product : products) {
+                int quantity = product.getQuantity();
                 pstmt.setString(1, saleId);
                 pstmt.setString(2, product.getId());
+                pstmt.setInt(3, quantity);
+
                 pstmt.addBatch();
             }
             pstmt.executeBatch();
+            System.out.println("✓ Productos guardados en Sale_Product: " + products.size());
         }
     }
 

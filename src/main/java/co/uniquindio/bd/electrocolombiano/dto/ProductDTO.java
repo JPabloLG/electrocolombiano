@@ -1,6 +1,7 @@
 package co.uniquindio.bd.electrocolombiano.dto;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +11,7 @@ import java.math.BigDecimal;
 @Setter
 @Getter
 @Builder(toBuilder = true)
-
+@AllArgsConstructor
 public class ProductDTO {
 
     private String id;
@@ -19,6 +20,9 @@ public class ProductDTO {
     private int stock;
     private String name;
     private ProductCategoryDTO category;
+
+    @Builder.Default
+    private int quantity = 1;
 
 
     public ProductDTO (String id, BigDecimal unitPrice, BigDecimal purchaseValue, int stock, String name ,ProductCategoryDTO category ){
@@ -40,5 +44,6 @@ public class ProductDTO {
         this.stock = stock;
         this.category = category;
         this.name = name;
+        this.quantity = 1;
     }
 }

@@ -13,6 +13,8 @@ public interface ProductDAO {
     ProductDTO findByName(String nameProduct);
     List<ProductDTO> getAll();
     boolean exists(String productId);
-    List<ProductDTO> findByCategory(int categoryId);
+    void updateStock(String productId, int newStock);
+    List<ProductDTO> findByCategory(String categoryName);
+    void decrementStock(String productId, int quantity);
 
 }

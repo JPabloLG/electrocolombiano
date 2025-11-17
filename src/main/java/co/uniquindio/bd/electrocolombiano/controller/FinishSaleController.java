@@ -28,6 +28,9 @@ public class FinishSaleController {
     private Label txt_name;
 
     @FXML
+    private Label txt_numberSale;
+
+    @FXML
     private Label txt_paymentType;
 
     @FXML
@@ -42,8 +45,9 @@ public class FinishSaleController {
     }
 
     @FXML
-    void finishProcess_btn(ActionEvent event) {
-
+    void finishProcess_btn(ActionEvent event) throws IOException {
+        store.setSale(null);
+        App.setRoot("principal", "ELECTROCOLOMBIANO -Panel Principal de Gestión-");
     }
 
     @FXML
@@ -53,11 +57,22 @@ public class FinishSaleController {
 
     @FXML
     void initialize() {
-        txt_header_currentUser.setText(store.getCurrentUser().getFullName());
         assert txt_cedula != null : "fx:id=\"txt_cedula\" was not injected: check your FXML file 'finishSale.fxml'.";
         assert txt_header_currentUser != null : "fx:id=\"txt_header_currentUser\" was not injected: check your FXML file 'finishSale.fxml'.";
         assert txt_name != null : "fx:id=\"txt_name\" was not injected: check your FXML file 'finishSale.fxml'.";
         assert txt_paymentType != null : "fx:id=\"txt_paymentType\" was not injected: check your FXML file 'finishSale.fxml'.";
         assert txt_total != null : "fx:id=\"txt_total\" was not injected: check your FXML file 'finishSale.fxml'.";
+        assert txt_numberSale != null : "fx:id=\"txt_numberSale\" was not injected: check your FXML file 'finishSale.fxml'.";
+
+        txt_header_currentUser.setText(store.getCurrentUser().getFullName());
+        txt_cedula.setText(store.getSale().getCustomer().getCedula());
+        txt_name.setText(store.getSale().getCustomer().getFullName());
+        txt_total.setText("$" + store.getSale().getTotalPrice().toString());
+        txt_numberSale.setText(store.getSale().getId());
+        if(store.getSale().getIsCredit() == true){
+            txt_paymentType.setText("Crédito");
+        }else{
+            txt_paymentType.setText("Débito");
+        }
     }
 }
