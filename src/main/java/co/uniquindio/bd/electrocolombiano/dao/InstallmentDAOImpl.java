@@ -21,8 +21,8 @@ public class InstallmentDAOImpl implements InstallmentDAO {
 
     @Override
     public void save(InstallmentDTO installment) {
-        String sql = "INSERT INTO installments (id, installment_count, installment_value, " +
-                "installment_date, payment_id) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Installment (installmentId, installmentCount, installmentValue, " +
+                "installmentDate, paymentId) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, installment.getId());
@@ -67,7 +67,7 @@ public class InstallmentDAOImpl implements InstallmentDAO {
 
     @Override
     public void delete(String id) {
-        String sql = "DELETE FROM installments WHERE id = ?";
+        String sql = "DELETE FROM Installment WHERE iinstallmentId = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, id);
@@ -85,8 +85,8 @@ public class InstallmentDAOImpl implements InstallmentDAO {
 
     @Override
     public InstallmentDTO findById(String id) {
-        String sql = "SELECT id, installment_count, installment_value, installment_date, payment_id " +
-                "FROM installments WHERE id = ?";
+        String sql = "SELECT iinstallmentId, installmentCount, installmentValue, installmentDate, paymentId " +
+                "FROM Installment WHERE installmentId = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, id);
@@ -126,8 +126,8 @@ public class InstallmentDAOImpl implements InstallmentDAO {
     @Override
     public List<InstallmentDTO> findByPaymentId(String paymentId) {
         List<InstallmentDTO> installments = new ArrayList<>();
-        String sql = "SELECT id, installment_count, installment_value, installment_date, payment_id " +
-                "FROM installments WHERE payment_id = ? ORDER BY installment_count";
+        String sql = "SELECT installmentId, installmentCount, installmentValue, installmentDate, paymentId " +
+                "FROM Installment WHERE paymentId = ? ORDER BY installmentCount";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, paymentId);
@@ -148,7 +148,7 @@ public class InstallmentDAOImpl implements InstallmentDAO {
      * Eliminar todas las cuotas de un pago
      */
     public void deleteByPaymentId(String paymentId) {
-        String sql = "DELETE FROM installments WHERE payment_id = ?";
+        String sql = "DELETE FROM Installment WHERE paymentId = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, paymentId);
@@ -164,11 +164,11 @@ public class InstallmentDAOImpl implements InstallmentDAO {
      */
     private InstallmentDTO mapResultSetToInstallmentDTO(ResultSet rs) throws SQLException {
         return InstallmentDTO.builder()
-                .id(rs.getString("id"))
-                .installmentCount(rs.getInt("installment_count"))
-                .installmentValue(rs.getBigDecimal("installment_value"))
-                .installmentDate(rs.getDate("installment_date").toLocalDate())
-                .paymentId(rs.getString("payment_id"))
+                .id(rs.getString("installmentId"))
+                .installmentCount(rs.getInt("installmentCount"))
+                .installmentValue(rs.getBigDecimal("installmentValue"))
+                .installmentDate(rs.getDate("installmentDate").toLocalDate())
+                .paymentId(rs.getString("paymentId"))
                 .build();
     }
 
@@ -177,10 +177,10 @@ public class InstallmentDAOImpl implements InstallmentDAO {
      */
     public List<InstallmentDTO> getPendingInstallments(String paymentId) {
         List<InstallmentDTO> installments = new ArrayList<>();
-        String sql = "SELECT id, installment_count, installment_value, installment_date, payment_id " +
-                "FROM installments " +
-                "WHERE payment_id = ? AND installment_date >= CURDATE() " +
-                "ORDER BY installment_count";
+        String sql = "SELECT installmentId, installmentCount, installmentValue, installmentDate, paymentId " +
+                "FROM Installment " +
+                "WHERE paymentId = ? AND installmentDate >= CURDATE() " +
+                "ORDER BY installmentCount";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, paymentId);

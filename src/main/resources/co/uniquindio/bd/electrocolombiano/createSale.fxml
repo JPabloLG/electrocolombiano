@@ -24,6 +24,11 @@
                     </image>
                 </ImageView>
                 <Region prefHeight="70.0" prefWidth="688.0" HBox.hgrow="ALWAYS" />
+                <Button onAction="#filterSale_btn" prefHeight="40" prefWidth="180" style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14; -fx-background-radius: 8; -fx-border-radius: 8; -fx-effect: dropshadow(gaussian, rgba(155, 89, 182, 0.4), 8, 0.3, 0, 2);" text="💰 Filtrar Ventas">
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Button>
                 <VBox alignment="CENTER_RIGHT" prefHeight="70.0" prefWidth="257.0">
                     <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="179.0" style="-fx-text-fill: #ecf0f1; -fx-font-size: 12;" text="Bienvenido" />
                     <Label fx:id="txt_header_currentUser" alignment="CENTER_RIGHT" prefHeight="22.0" prefWidth="221.0" style="-fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold;" text="Juan Pablo López" />

@@ -67,51 +67,68 @@ public class FinishSaleController {
             // Crear contenido HTML de la factura
             String htmlContent = crearContenidoFactura();
 
-            // Crear un archivo temporal en memoria y abrirlo en el navegador
-            String tempFileName = "factura_" + store.getSale().getId() + ".html";
-
-            // Usar un enfoque que funcione en diferentes sistemas operativos
-            abrirHTMLEnNavegador(htmlContent, tempFileName);
-
-            mostrarAlerta("Éxito", "Factura abierta en el navegador");
-
-        } catch (Exception e) {
-            mostrarAlerta("Error", "No se pudo abrir en el navegador: " + e.getMessage());
-        }
-    }
-
-    private void abrirHTMLEnNavegador(String htmlContent, String fileName) {
-        try {
             // Crear un archivo temporal
-            java.io.File tempFile = java.io.File.createTempFile("factura_", ".html");
+            java.io.File tempFile = java.io.File.createTempFile("factura_" + store.getSale().getId() + "_", ".html");
 
             // Escribir el contenido HTML
             java.io.FileWriter writer = new java.io.FileWriter(tempFile);
             writer.write(htmlContent);
             writer.close();
 
-            // Obtener la ruta absoluta del archivo
-            String filePath = tempFile.getAbsolutePath();
+            // Usar java.awt.Desktop para abrir en el navegador (más confiable)
+            if (java.awt.Desktop.isDesktopSupported()) {
+                java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
+                if (desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
+                    desktop.browse(tempFile.toURI());
+                    mostrarAlerta("Éxito", "Factura abierta en el navegador");
 
-            // Abrir en el navegador predeterminado
+                    // Programar eliminación del archivo temporal después de 10 segundos
+                    new java.util.Timer().schedule(
+                            new java.util.TimerTask() {
+                                @Override
+                                public void run() {
+                                    if (tempFile.exists()) {
+                                        tempFile.delete();
+                                    }
+                                }
+                            },
+                            10000 // 10 segundos
+                    );
+                    return;
+                }
+            }
+
+            // Si Desktop no funciona, intentar con el método antiguo
+            abrirConRuntime(tempFile);
+
+        } catch (Exception e) {
+            mostrarAlerta("Error", "No se pudo abrir en el navegador: " + e.getMessage());
+        }
+    }
+
+    private void abrirConRuntime(java.io.File tempFile) {
+        try {
             String os = System.getProperty("os.name").toLowerCase();
             Runtime rt = Runtime.getRuntime();
 
             if (os.contains("win")) {
-                // Windows
-                rt.exec("cmd /c start \"\" \"" + filePath + "\"");
+                // Windows - usar el comando correcto
+                String cmd = "cmd /c start \"\" \"" + tempFile.getAbsolutePath() + "\"";
+                rt.exec(cmd);
             } else if (os.contains("mac")) {
                 // Mac
-                rt.exec("open \"" + filePath + "\"");
+                rt.exec(new String[]{"open", tempFile.getAbsolutePath()});
             } else if (os.contains("nix") || os.contains("nux")) {
                 // Linux/Unix
-                rt.exec("xdg-open \"" + filePath + "\"");
+                rt.exec(new String[]{"xdg-open", tempFile.getAbsolutePath()});
             } else {
-                // Sistema operativo no reconocido - intentar método genérico
-                rt.exec("open \"" + filePath + "\"");
+                // Sistema operativo no reconocido
+                rt.exec(new String[]{"open", tempFile.getAbsolutePath()});
             }
 
-            // Programar eliminación del archivo temporal después de 30 segundos
+            mostrarAlerta("Éxito", "Factura abierta en el navegador");
+
+            // Programar eliminación del archivo temporal después de 10 segundos
             new java.util.Timer().schedule(
                     new java.util.TimerTask() {
                         @Override
@@ -121,57 +138,33 @@ public class FinishSaleController {
                             }
                         }
                     },
-                    30000 // 30 segundos
+                    10000 // 10 segundos
             );
 
         } catch (Exception e) {
-            // Si falla, intentar método alternativo
-            abrirHTMLEnNavegadorAlternativo(htmlContent);
+            // Si todo falla, mostrar el contenido en un diálogo
+            mostrarContenidoEnDialogo();
         }
     }
 
-    private void abrirHTMLEnNavegadorAlternativo(String htmlContent) {
+    private void mostrarContenidoEnDialogo() {
         try {
-            // Codificar el contenido HTML para URL
-            String encodedHtml = java.net.URLEncoder.encode(htmlContent, "UTF-8")
-                    .replaceAll("\\+", "%20")
-                    .replaceAll("%21", "!")
-                    .replaceAll("%27", "'")
-                    .replaceAll("%28", "(")
-                    .replaceAll("%29", ")")
-                    .replaceAll("%7E", "~");
+            String htmlContent = crearContenidoFactura();
 
-            // Crear URL de datos
-            String dataUrl = "data:text/html;charset=utf-8," + encodedHtml;
-
-            // Abrir en el navegador
-            String os = System.getProperty("os.name").toLowerCase();
-            Runtime rt = Runtime.getRuntime();
-
-            if (os.contains("win")) {
-                rt.exec("cmd /c start \"\" \"" + dataUrl + "\"");
-            } else if (os.contains("mac")) {
-                rt.exec("open \"" + dataUrl + "\"");
-            } else if (os.contains("nix") || os.contains("nux")) {
-                rt.exec("xdg-open \"" + dataUrl + "\"");
-            }
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Factura - ELECTROCOLOMBIANO");
+            alert.setHeaderText("Factura Generada");
+            alert.setContentText("La factura se ha generado correctamente.\n\n" +
+                    "ID de Venta: " + store.getSale().getId() + "\n" +
+                    "Cliente: " + store.getSale().getCustomer().getUserName() + "\n" +
+                    "Total: $" + String.format("%,.2f", store.getSale().getTotalPrice()) + "\n\n" +
+                    "Puede imprimir esta información o tomar captura de pantalla.");
+            alert.getDialogPane().setPrefSize(400, 300);
+            alert.showAndWait();
 
         } catch (Exception e) {
-            // Último recurso: mostrar el HTML en un diálogo
-            mostrarHTMLEnDialogo(htmlContent);
+            mostrarAlerta("Error", "No se pudo generar la factura: " + e.getMessage());
         }
-    }
-
-    private void mostrarHTMLEnDialogo(String htmlContent) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Factura - ELECTROCOLOMBIANO");
-        alert.setHeaderText("Factura Generada");
-        alert.setContentText("La factura se ha generado correctamente.\n\n" +
-                "Contenido HTML listo para copiar:\n\n" +
-                htmlContent.substring(0, Math.min(500, htmlContent.length())) + "...\n\n" +
-                "Puede copiar este contenido y pegarlo en un archivo .html");
-        alert.getDialogPane().setPrefSize(600, 400);
-        alert.showAndWait();
     }
 
     private String crearContenidoFactura() {
@@ -330,8 +323,10 @@ public class FinishSaleController {
                 "        </div>\n" +
                 "    </div>\n" +
                 "    <script>\n" +
-                "        // Auto-impresión opcional (descomenta si quieres que se imprima automáticamente)\n" +
-                "        // window.onload = function() { window.print(); }\n" +
+                "        // Auto-impresión opcional\n" +
+                "        window.onload = function() { \n" +
+                "            setTimeout(function() { window.print(); }, 1000);\n" +
+                "        }\n" +
                 "    </script>\n" +
                 "</body>\n" +
                 "</html>";
@@ -339,7 +334,6 @@ public class FinishSaleController {
 
     private String generarFilasProductos() {
         StringBuilder filas = new StringBuilder();
-
         if (store.getSale().getProducts() != null) {
             store.getSale().getProducts().forEach(producto -> {
                 double subtotalProducto = producto.getUnitPrice().doubleValue() * producto.getQuantity();

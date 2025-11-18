@@ -23,17 +23,46 @@ public class SaleService {
         this.paymentService = paymentService;
     }
 
-    public SaleDTO createSale(SaleDTO sale) throws Exception {
-        sale.setId(UUID.randomUUID().toString());
-        sale.setDateSale(LocalDate.now());
-        validateId(sale.getCustomerId());
-        sale.setEmployee(sale.getEmployee());
-        sale.setCustomerId(sale.getCustomerId());
-        PaymentDTO paymentDTO = new PaymentDTO(UUID.randomUUID().toString(),sale.getTotalPrice(), sale.isCredit() , sale.getId());
-        saleDAO.save(sale);
-        paymentService.createPayment(paymentDTO);
-        sale.setPayments(sale.getPayments());
-        return sale;
+        /**
+         * Crea una venta SIN crear pagos automáticamente
+         * Los pagos se crean desde el controlador
+         */
+        public SaleDTO createSale(SaleDTO sale) {
+            try {
+                // Generar ID único
+                String saleId = "SALE-" + System.currentTimeMillis();
+                sale.setId(saleId);
+
+                // Establecer fecha actual
+                sale.setDateSale(LocalDate.now());
+
+                System.out.println("=== GUARDANDO VENTA ===");
+                System.out.println("ID: " + saleId);
+                System.out.println("Empleado: " + sale.getEmployee().getCedula());
+                System.out.println("Cliente: " + sale.getCustomerId());
+                System.out.println("Total: " + sale.getTotalPrice());
+                System.out.println("Productos: " + sale.getProducts().size());
+                System.out.println("=======================");
+
+                // Guardar la venta (SIN pagos)
+                saleDAO.save(sale);
+
+                System.out.println("✓ Venta guardada exitosamente");
+
+                return sale;
+
+            } catch (Exception e) {
+                System.err.println("✗ Error al crear venta: " + e.getMessage());
+                throw new RuntimeException("Error al crear la venta: " + e.getMessage(), e);
+            }
+        }
+
+    public BigDecimal countSaleByMonth(int month, int year) throws Exception {
+        return saleDAO.getTotalSalesByMonth(year, month);
+    }
+
+    public BigDecimal fingIVAPay(int year, int cuarter) throws Exception {
+        return  saleDAO.getTotalIVAByQuarter(year, cuarter);
     }
 
     private void validateId(String idCustomer) throws Exception {

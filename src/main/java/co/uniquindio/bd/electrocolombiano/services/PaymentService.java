@@ -27,6 +27,14 @@ public class PaymentService {
 
     public PaymentDTO createPayment(PaymentDTO paymentDTO) {
 
+        System.out.println("=== DEPURACIÓN PAYMENT SERVICE ===");
+        System.out.println("Payment ID: " + paymentDTO.getId());
+        System.out.println("Total Price: " + paymentDTO.getTotalPrice());
+        System.out.println("Is Credit: " + paymentDTO.isCredit());
+        System.out.println("Installment Count: " + paymentDTO.getInstallmentCount());
+        System.out.println("Installments List Size: " + (paymentDTO.getInstallments() != null ? paymentDTO.getInstallments().size() : "null"));
+        System.out.println("===================================");
+
         if (paymentDTO.getTotalPrice() == null ||
                 paymentDTO.getTotalPrice().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("El precio total debe ser mayor a 0");

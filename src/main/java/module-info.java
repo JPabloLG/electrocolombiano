@@ -5,7 +5,7 @@ module co.uniquindio.bd.electrocolombiano {
     requires java.sql;
     requires java.management;
     requires javafx.graphics;
-
+    requires java.desktop;
 
 
     opens co.uniquindio.bd.electrocolombiano to javafx.fxml;
