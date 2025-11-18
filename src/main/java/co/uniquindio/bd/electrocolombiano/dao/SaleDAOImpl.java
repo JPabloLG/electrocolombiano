@@ -501,16 +501,26 @@ public class SaleDAOImpl implements SaleDAO {
 
     @Override
     public BigDecimal getTotalIVAByQuarter(int year, int quarter) {
+        // Validar quarter (1-4)
+        if (quarter < 1 || quarter > 4) {
+            throw new IllegalArgumentException("El trimestre debe estar entre 1 y 4. Recibido: " + quarter);
+        }
+
         // Calcular meses del trimestre
         int startMonth = (quarter - 1) * 3 + 1;
         int endMonth = startMonth + 2;
 
-        String sql = "SELECT SUM(sp.quantity * sp.unitPrice * pc.iva) as totalIVA " +
+        // ✅ CAMBIO: Usar p.unitPrice en lugar de sp.unitPrice
+        String sql = "SELECT ISNULL(SUM(sp.quantity * p.unitPrice * pc.iva), 0) as totalIVA " +
                 "FROM Sale s " +
-                "INNER JOIN SaleProduct sp ON s.id = sp.saleId " +
+                "INNER JOIN Sale_Product sp ON s.id = sp.saleId " +
                 "INNER JOIN Product p ON sp.productId = p.id " +
                 "INNER JOIN ProductCategory pc ON p.categoryId = pc.id " +
-                "WHERE YEAR(s.dateSale) = ? AND MONTH(s.dateSale) BETWEEN ? AND ?";
+                "WHERE YEAR(s.saleDate) = ? AND MONTH(s.saleDate) BETWEEN ? AND ?";
+
+        System.out.println("=== CALCULANDO IVA POR TRIMESTRE ===");
+        System.out.println("Año: " + year);
+        System.out.println("Trimestre: " + quarter + " (meses " + startMonth + "-" + endMonth + ")");
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, year);
@@ -519,11 +529,15 @@ public class SaleDAOImpl implements SaleDAO {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    BigDecimal total = rs.getBigDecimal("totalIVA");
-                    return total != null ? total : BigDecimal.ZERO;
+                    BigDecimal total = rs.getBigDecimal(1);  // Usar índice en lugar de alias
+                    BigDecimal resultado = total != null ? total : BigDecimal.ZERO;
+
+                    System.out.println("✓ Total IVA del trimestre: $" + String.format("%,.2f", resultado));
+                    return resultado;
                 }
             }
         } catch (SQLException e) {
+            System.err.println("✗ Error al obtener IVA por trimestre: " + e.getMessage());
             throw new RuntimeException("Error al obtener IVA por trimestre: " + e.getMessage(), e);
         }
 

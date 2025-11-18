@@ -2,7 +2,7 @@
 
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
@@ -44,13 +44,13 @@
                     <HBox prefHeight="36.0" prefWidth="997.0">
                         <children>
                             <Label layoutX="358.0" layoutY="10.0" prefHeight="17.0" prefWidth="212.0" />
-                            <Label style="-fx-font-size: 25; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Fecha Inicial" />
+                            <Label style="-fx-font-size: 25; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Trimestre del año" />
                             <Label prefHeight="17.0" prefWidth="23.0" />
-                            <DatePicker fx:id="startDate" prefHeight="34.0" prefWidth="181.0" stylesheets="@../../../../styles/style_datePicker.css" />
+                            <ComboBox fx:id="combo_trimestre" prefWidth="150.0" promptText="Trimestre" stylesheets="@../../../../styles/style_combo_box.css" />
                             <Label layoutX="502.0" layoutY="10.0" prefHeight="17.0" prefWidth="79.0" />
-                            <Label style="-fx-font-size: 25; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Fecha Final" />
+                            <Label style="-fx-font-size: 25; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Año" />
                             <Label prefHeight="17.0" prefWidth="23.0" />
-                            <DatePicker fx:id="lastDate" prefHeight="34.0" prefWidth="181.0" stylesheets="@../../../../styles/style_datePicker.css" />
+                            <ComboBox fx:id="combo_year" prefWidth="150.0" promptText="Año" stylesheets="@../../../../styles/style_combo_box.css" />
                         </children>
                     </HBox>
                     <HBox alignment="CENTER" prefHeight="24.0" prefWidth="1208.0" />
