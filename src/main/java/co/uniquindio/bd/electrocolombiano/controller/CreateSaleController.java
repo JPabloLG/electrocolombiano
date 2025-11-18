@@ -2,7 +2,9 @@ package co.uniquindio.bd.electrocolombiano.controller;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -196,23 +198,54 @@ public class CreateSaleController {
             // Determinar si es crédito
             boolean esCredito = checkCredit.isSelected();
 
-            UserDTO user = new UserDTO(store.getCurrentUser().getCedula(), store.getCurrentUser().getFullName(), store.getCurrentUser().getUserName(), store.getCurrentUser().getPassword(), store.getCurrentUser().getRole());
-            System.out.println(user);
+            UserDTO empleado = new UserDTO(
+                    store.getCurrentUser().getCedula(),
+                    store.getCurrentUser().getFullName(),
+                    store.getCurrentUser().getUserName(),
+                    store.getCurrentUser().getPassword(),
+                    store.getCurrentUser().getRole()
+            );
+            System.out.println(empleado);
             UserDTO cliente = systemUserService.getUser(txt_cedulaClient.getText());
+
+            BigDecimal cuotaInicial = BigDecimal.ZERO;
+            Integer numeroCuotas = null;
 
             // Validar campos de crédito si es necesario
             if (esCredito) {
                 if (combo_cuotas.getValue() == null || txt_inicialCuota.getText().trim().isEmpty()) {
                     mostrarAlerta("Error", "Para venta a crédito debe seleccionar cuotas e ingresar cuota inicial");
                     return;
-                }else{
-                    txt_inicialCuota.setText(txt_inicialCuota.getText().trim());
-                    combo_cuotas.getValue();
+                }
+
+                try {
+                    cuotaInicial = new BigDecimal(txt_inicialCuota.getText().trim());
+                    numeroCuotas = combo_cuotas.getValue();
+
+                    // Validar que la cuota inicial sea al menos el 30%
+                    BigDecimal minimoInicial = total.multiply(new BigDecimal("0.30"));
+                    if (cuotaInicial.compareTo(minimoInicial) < 0) {
+                        mostrarAlerta("Error",
+                                "La cuota inicial debe ser al menos el 30% del total\n" +
+                                        "Mínimo requerido: $" + String.format("%,.2f", minimoInicial));
+                        return;
+                    }
+
+                    // Validar que la cuota inicial no sea mayor al total
+                    if (cuotaInicial.compareTo(total) >= 0) {
+                        mostrarAlerta("Error", "La cuota inicial no puede ser mayor o igual al total");
+                        return;
+                    }
+
+                } catch (NumberFormatException e) {
+                    mostrarAlerta("Error", "La cuota inicial debe ser un valor numérico válido");
+                    return;
                 }
             }
-            // Crear el DTO de la venta usando el builder
+
+            // ========== CREAR LA VENTA ==========
             SaleDTO sale = SaleDTO.builder()
-                    .employee(user) // Empleado actual
+                    .employee(empleado)
                     .customerId(cliente.getCedula())
                     .subtotal(subtotal)
                     .totalPrice(total)
@@ -221,39 +254,125 @@ public class CreateSaleController {
                     .payments(new ArrayList<>())
                     .build();
 
+            // Crear la venta (esto guarda en BD)
             SaleDTO ventaCreada = saleService.createSale(sale);
 
-            UserDTO user1 = systemUserService.getUser(ventaCreada.getCustomerId());
+            // ========== CREAR PAGOS ==========
+            List<PaymentDTO> payments = new ArrayList<>();
 
-            SystemUser systemUser1 = SystemUser.builder()
-                    .userName(user1.getCedula())
-                    .cedula(user1.getCedula()).
-                    role(user1.role).fullName(user1.getFullName()).
-                    password(user1.getPassword()).build();
+            if (esCredito) {
+                // VENTA A CRÉDITO: Crear cuota inicial + cuotas mensuales
 
-            Sale saleEnt = Sale.builder()
+                // 1. Crear pago de cuota inicial
+                PaymentDTO pagoInicial = PaymentDTO.builder()
+                        .id("PAY-INICIAL-" + ventaCreada.getId())
+                        .saleId(ventaCreada.getId())
+                        .totalPrice(cuotaInicial)
+                        .isCredit(false)
+                        .build();
+
+                paymentService.createPayment(pagoInicial);
+                payments.add(pagoInicial);
+
+                // 2. Crear pago a crédito con cuotas
+                BigDecimal saldoFinanciar = total.subtract(cuotaInicial);
+                BigDecimal interes = saldoFinanciar.multiply(new BigDecimal("0.05")); // 5% de interés
+                BigDecimal totalFinanciado = saldoFinanciar.add(interes);
+                BigDecimal valorCuota = totalFinanciado.divide(
+                        BigDecimal.valueOf(numeroCuotas),
+                        2,
+                        RoundingMode.HALF_UP
+                );
+
+                PaymentDTO pagoCredito = PaymentDTO.builder()
+                        .id("PAY-CREDIT-" + ventaCreada.getId())
+                        .saleId(ventaCreada.getId())
+                        .totalPrice(totalFinanciado)
+                        .isCredit(true)
+                        .installments(new ArrayList<>())
+                        .build();
+
+                // 3. Generar cuotas mensuales
+                List<InstallmentDTO> installments = new ArrayList<>();
+                for (int i = 1; i <= numeroCuotas; i++) {
+                    InstallmentDTO installment = InstallmentDTO.builder()
+                            .id("INST-" + ventaCreada.getId() + "-" + String.format("%02d", i))
+                            .paymentId(pagoCredito.getId())
+                            .installmentCount(i)
+                            .installmentValue(valorCuota)
+                            .installmentDate(LocalDate.now().plusMonths(i))
+                            .isPaid(false)
+                            .build();
+
+                    installments.add(installment);
+                }
+
+                pagoCredito.setInstallments(installments);
+                paymentService.createPayment(pagoCredito);
+                payments.add(pagoCredito);
+
+                // Mostrar resumen de crédito
+                mostrarAlerta("Venta a Crédito Creada",
+                        "ID: " + ventaCreada.getId() + "\n" +
+                                "Total: $" + String.format("%,.2f", total) + "\n\n" +
+                                "Cuota Inicial: $" + String.format("%,.2f", cuotaInicial) + "\n" +
+                                "Saldo a Financiar: $" + String.format("%,.2f", saldoFinanciar) + "\n" +
+                                "Interés (5%): $" + String.format("%,.2f", interes) + "\n" +
+                                "Total Financiado: $" + String.format("%,.2f", totalFinanciado) + "\n\n" +
+                                "Número de Cuotas: " + numeroCuotas + "\n" +
+                                "Valor por Cuota: $" + String.format("%,.2f", valorCuota) + "\n" +
+                                "Primera Cuota: " + LocalDate.now().plusMonths(1)
+                );
+
+            } else {
+                // VENTA DE CONTADO: Un solo pago por el total
+                PaymentDTO pagoContado = PaymentDTO.builder()
+                        .id("PAY-CASH-" + ventaCreada.getId())
+                        .saleId(ventaCreada.getId())
+                        .totalPrice(total)
+                        .isCredit(false)
+                        .build();
+
+                paymentService.createPayment(pagoContado);
+                payments.add(pagoContado);
+
+                // Mostrar resumen de contado
+                mostrarAlerta("Venta de Contado Creada",
+                        "ID: " + ventaCreada.getId() + "\n" +
+                                "Total Pagado: $" + String.format("%,.2f", total) + "\n" +
+                                "Fecha: " + LocalDate.now()
+                );
+            }
+
+            // ========== ACTUALIZAR MODELO LOCAL ==========
+            ventaCreada.setPayments(payments);
+
+            // Crear entidad SystemUser para el cliente
+            SystemUser systemUserCliente = SystemUser.builder()
+                    .userName(cliente.getUserName())
+                    .cedula(cliente.getCedula())
+                    .role(cliente.getRole())
+                    .fullName(cliente.getFullName())
+                    .password(cliente.getPassword())
+                    .build();
+
+            // Crear entidad Sale para el store
+            Sale saleEntity = Sale.builder()
                     .id(ventaCreada.getId())
                     .saleDate(ventaCreada.getDateSale())
-                    .customer(systemUser1)
+                    .customer(systemUserCliente)
                     .employee(store.getCurrentUser())
-                    .payments(new ArrayList<>())
-                    .products(new ArrayList<>(productosSeleccionados))
+                    .payments(new ArrayList<>()) // Se cargan después si es necesario
+                    .products(new ArrayList<>()) // Se cargan después si es necesario
                     .subtotal(ventaCreada.getSubtotal())
                     .totalPrice(ventaCreada.getTotalPrice())
                     .isCredit(ventaCreada.isCredit())
                     .build();
 
-            store.setSale(saleEnt);
+            store.setSale(saleEntity);
 
-            // Mostrar mensaje de éxito
-            mostrarAlerta("Éxito", "Venta creada exitosamente\nID: " + ventaCreada.getId() +
-                    "\nTotal: $" + ventaCreada.getTotalPrice() +
-                    "\nTipo: " + (esCredito ? "Crédito" : "Contado"));
-
-            // Limpiar formulario
+            // ========== LIMPIAR Y NAVEGAR ==========
             limpiarFormulario();
-
-            // Ir a la pantalla de resumen
             App.setRoot("finishSale", "ELECTROCOLOMBIANO -Resumen de Venta-");
 
         } catch (Exception e) {

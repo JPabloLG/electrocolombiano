@@ -1,8 +1,6 @@
 package co.uniquindio.bd.electrocolombiano.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 
 import java.math.BigDecimal;
@@ -10,6 +8,7 @@ import java.time.LocalDate;
 @Setter
 @Getter
 @Builder(toBuilder = true)
+@NoArgsConstructor
 
 public class InstallmentDTO {
 
@@ -18,14 +17,16 @@ public class InstallmentDTO {
     private BigDecimal installmentValue;
     private LocalDate installmentDate;
     private String paymentId;
+    private boolean isPaid;
 
-    public InstallmentDTO (String id, int installmentCount, BigDecimal installmentValue, LocalDate installmentDate, String paymentId) {
+    public InstallmentDTO (String id, int installmentCount, BigDecimal installmentValue, LocalDate installmentDate, String paymentId, boolean isPaid) {
 
         this.id = id;
         this.installmentCount = installmentCount;
         this.installmentValue = installmentValue;
         this.installmentDate = installmentDate;
         this.paymentId = paymentId;
+        this.isPaid = isPaid;
         validateFields();
     }
 

@@ -19,6 +19,7 @@ public class Installment {
     private BigDecimal installmentValue;
     private LocalDate installmentDate;
     private Payment payment;
+    private boolean isPaid;
     
 }
 

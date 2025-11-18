@@ -157,12 +157,11 @@ public class ProductDAOImpl implements ProductDAO {
      */
     public List<ProductDTO> findByCategory(String categoryName) {
         List<ProductDTO> products = new ArrayList<>();
-        String sql = "SELECT p.id, p.unitPrice, p.purchaseValue, p.stock, " +
-                "pc.id as categoryId, pc.categoryName, pc.iva, pc.profitMargin " +
+        String sql = "SELECT p.id, p.name, p.unitPrice, p.purchaseValue, p.stock, " +
+                "pc.id AS categoryId, pc.categoryName, pc.iva, pc.profitMargin " +
                 "FROM Product p " +
                 "INNER JOIN ProductCategory pc ON p.categoryId = pc.id " +
-                "WHERE p.categoryName = ? " +
-                "ORDER BY p.name";
+                "WHERE pc.categoryName = ? ";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, categoryName);

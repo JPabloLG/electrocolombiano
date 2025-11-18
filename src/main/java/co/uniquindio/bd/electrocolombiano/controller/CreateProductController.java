@@ -84,8 +84,8 @@ public class CreateProductController {
     }
 
     @FXML
-    void listProducts_btn(ActionEvent event) {
-
+    void listProducts_btn(ActionEvent event) throws IOException {
+        App.setRoot("listProducts","ELECTROCOLOMBIANO -Lista de Productos por Categoría-");
     }
 
     @FXML

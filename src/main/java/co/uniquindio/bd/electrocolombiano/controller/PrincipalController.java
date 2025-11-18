@@ -52,8 +52,8 @@ public class PrincipalController {
     }
 
     @FXML
-    void reportDIAN_btn(ActionEvent event) {
-
+    void reportDIAN_btn(ActionEvent event) throws IOException {
+        App.setRoot("DIANReport","ELECTROJAPONESA -Reporte a la DIAN-");
     }
 
     @FXML

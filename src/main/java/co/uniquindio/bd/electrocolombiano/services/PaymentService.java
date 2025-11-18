@@ -27,20 +27,10 @@ public class PaymentService {
 
     public PaymentDTO createPayment(PaymentDTO paymentDTO) {
 
-        // 1. Validar datos básicos
         if (paymentDTO.getTotalPrice() == null ||
                 paymentDTO.getTotalPrice().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("El precio total debe ser mayor a 0");
         }
-
-        // 2. Convertir DTO → Entidad Payment
-        Payment payment = new Payment(
-                paymentDTO.getId(),
-                paymentDTO.getTotalPrice(),
-                paymentDTO.isCredit(),
-                paymentDTO.getSaleId()
-        );
-
 
         paymentDAO.save(paymentDTO);
 
@@ -49,7 +39,7 @@ public class PaymentService {
             return paymentDTO;
         }
 
-        int installmentsCount = paymentDTO.getInstallmentCount(); // ← ya no da 0 por error
+        int installmentsCount = paymentDTO.getInstallmentCount();
 
         if (installmentsCount <= 0) {
             throw new IllegalArgumentException("El número de cuotas debe ser mayor a 0 para pagos a crédito.");
@@ -77,7 +67,8 @@ public class PaymentService {
                     i + 1,
                     monthlyValue,
                     baseDate.plusMonths(i),
-                    paymentDTO.getId()
+                    paymentDTO.getId(),
+                    false
             );
 
             installmentDTOs.add(installmentDTO);

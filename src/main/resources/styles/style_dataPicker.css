@@ -1,0 +1,200 @@
+/* Estilo principal para el DatePicker */
+.date-picker {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #2c3e50;
+    -fx-border-width: 0 0 2px 0;
+    -fx-border-radius: 0;
+    -fx-background-radius: 4px;
+    -fx-padding: 6px 12px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+    -fx-prompt-text-fill: #95a5a6;
+}
+
+/* Estilo cuando el DatePicker está enfocado */
+.date-picker:focused {
+    -fx-border-color: #3498db;
+    -fx-border-width: 0 0 2px 0;
+    -fx-background-color: #f8f9fa;
+    -fx-effect: dropshadow(gaussian, rgba(52, 152, 219, 0.3), 10, 0.2, 0, 0);
+}
+
+/* Estilo al pasar el mouse */
+.date-picker:hover {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #3498db;
+}
+
+/* Estilo del botón del calendario */
+.date-picker .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 4px;
+}
+
+.date-picker .arrow-button:hover {
+    -fx-background-color: #ecf0f1;
+    -fx-background-radius: 2px;
+}
+
+/* Estilo de la flecha del calendario */
+.date-picker .arrow {
+    -fx-background-color: #2c3e50;
+    -fx-padding: 4px;
+    -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
+}
+
+.date-picker:hover .arrow {
+    -fx-background-color: #3498db;
+}
+
+.date-picker:focused .arrow {
+    -fx-background-color: #3498db;
+}
+
+/* Estilo del campo de texto del DatePicker */
+.date-picker .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 14px;
+    -fx-padding: 0;
+}
+
+.date-picker .text-field:focused {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/* Estilo del popup del calendario */
+.date-picker-popup {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.2, 0, 2);
+}
+
+/* Estilo del mes y año en el calendario */
+.date-picker-popup .month-year-pane {
+    -fx-background-color: #2c3e50;
+    -fx-text-fill: white;
+}
+
+.date-picker-popup .month-year-pane .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Botones de navegación del calendario */
+.date-picker-popup .previous-month,
+.date-picker-popup .next-month {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #7f8c8d;
+}
+
+.date-picker-popup .previous-month:hover,
+.date-picker-popup .next-month:hover {
+    -fx-background-color: #34495e;
+    -fx-text-fill: white;
+}
+
+.date-picker-popup .previous-month .arrow,
+.date-picker-popup .next-month .arrow {
+    -fx-background-color: #bdc3c7;
+}
+
+.date-picker-popup .previous-month:hover .arrow,
+.date-picker-popup .next-month:hover .arrow {
+    -fx-background-color: white;
+}
+
+/* Estilo de los días de la semana */
+.date-picker-popup .day-name-cell {
+    -fx-background-color: #ecf0f1;
+    -fx-text-fill: #2c3e50;
+    -fx-font-weight: bold;
+    -fx-border-color: #d5dbdb;
+    -fx-border-width: 0 0 1px 0;
+}
+
+/* Estilo de las celdas de días */
+.date-picker-popup .day-cell {
+    -fx-background-color: white;
+    -fx-text-fill: #2c3e50;
+    -fx-border-color: #f0f0f0;
+    -fx-border-width: 1px;
+}
+
+/* Día al pasar el mouse */
+.date-picker-popup .day-cell:hover {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+}
+
+/* Día seleccionado */
+.date-picker-popup .day-cell:selected {
+    -fx-background-color: #2c3e50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Día del mes actual */
+.date-picker-popup .today {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Días de otros meses */
+.date-picker-popup .other-month {
+    -fx-background-color: #f8f9fa;
+    -fx-text-fill: #bdc3c7;
+}
+
+/* Estilo cuando el DatePicker está deshabilitado */
+.date-picker:disabled {
+    -fx-background-color: #ecf0f1;
+    -fx-border-color: #bdc3c7;
+    -fx-text-fill: #95a5a6;
+    -fx-opacity: 0.7;
+}
+
+.date-picker:disabled .arrow {
+    -fx-background-color: #bdc3c7;
+}
+
+.date-picker:disabled .text-field {
+    -fx-text-fill: #95a5a6;
+}
+
+/* Estilo para el prompt text */
+.date-picker .text-field .prompt-text {
+    -fx-fill: #95a5a6;
+    -fx-font-style: italic;
+}
+
+/* Estilo del spinner (si se usa) */
+.date-picker .spinner {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.date-picker .spinner .increment-arrow-button,
+.date-picker .spinner .decrement-arrow-button {
+    -fx-background-color: #ecf0f1;
+    -fx-border-color: #bdc3c7;
+}
+
+.date-picker .spinner .increment-arrow-button:hover,
+.date-picker .spinner .decrement-arrow-button:hover {
+    -fx-background-color: #3498db;
+    -fx-border-color: #2980b9;
+}
+
+.date-picker .spinner .increment-arrow,
+.date-picker .spinner .decrement-arrow {
+    -fx-background-color: #2c3e50;
+}

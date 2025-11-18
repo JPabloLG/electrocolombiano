@@ -13,13 +13,13 @@ import java.util.List;
 @Setter
 @Getter
 @AllArgsConstructor
-public class PaymentDTO {
+public class  PaymentDTO {
 
     private String id;
     private BigDecimal totalPrice;
     private boolean isCredit;
     private String saleId;
-    private String installmentCount;
+    private int installmentCount;
 
     @Builder.Default
     private List<InstallmentDTO> installments = new ArrayList<>();
