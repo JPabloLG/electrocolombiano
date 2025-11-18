@@ -21,17 +21,17 @@ public class UserDAOImpl implements UserDAO{
 
     @Override
     public void save(UserDTO user) {
-        String sql = "INSERT INTO SystemUser (cedula, userName, password, fullName, role_id) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO SystemUser (userName, cedula, password, role_id, fullName) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, user.getCedula());
-            stmt.setString(3, user.getUserName());
-            stmt.setString(4, user.getPassword());
-            stmt.setString(2, user.getFullName());
+            stmt.setString(1, user.getUserName());
+            stmt.setString(2, user.getCedula());
+            stmt.setString(3, user.getPassword());
+            stmt.setString(5, user.getFullName());
 
 
             // Mapear nombre de rol a ID
             int roleId = mapearRolAId(user.getRole().getRoleName());
-            stmt.setInt(5, roleId);
+            stmt.setInt(4, roleId);
 
             stmt.executeUpdate();
         } catch (SQLException e) {
