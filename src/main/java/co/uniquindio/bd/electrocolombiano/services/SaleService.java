@@ -69,6 +69,14 @@ public class SaleService {
         return  saleDAO.getTotalIVAByQuarter(year, cuarter);
     }
 
+    public int countSaleCredit(int year, int month)throws Exception {
+            return saleDAO.countCreditSalesByMonth(year,month);
+    }
+    public int countSale(int year, int month){
+            return saleDAO.countCashSalesByMonth(year, month);
+
+    }
+
     private void validateId(String idCustomer) throws Exception {
         userDAO.findByCedula(idCustomer);
         if(userDAO.findByCedula(idCustomer)==null){

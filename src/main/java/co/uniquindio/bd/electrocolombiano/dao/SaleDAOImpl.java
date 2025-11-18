@@ -311,7 +311,6 @@ public class SaleDAOImpl implements SaleDAO {
                             .unitPrice(rs.getBigDecimal("unitPrice"))
                             .purchaseValue(rs.getBigDecimal("purchaseValue"))
                             .stock(rs.getInt("stock"))
-                            //revisarrrrrrrrrrrrrrrr
                             .stock(rs.getInt("quantity"))
                             .category(category)
                             .build();
@@ -623,5 +622,84 @@ public class SaleDAOImpl implements SaleDAO {
             e.printStackTrace();
             throw new RuntimeException("Error al contar ventas por mes: " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    public int countCreditSalesByMonth(int year, int month) {
+        // Validar parámetros
+        if (month < 1 || month > 12) {
+            throw new IllegalArgumentException("El mes debe estar entre 1 y 12. Recibido: " + month);
+        }
+
+        if (year < 2000 || year > 2100) {
+            throw new IllegalArgumentException("El año debe estar entre 2000 y 2100. Recibido: " + year);
+        }
+
+        String sql = "SELECT COUNT(DISTINCT s.id) " +
+                "FROM Sale s " +
+                "INNER JOIN Payment p ON s.id = p.saleId " +
+                "WHERE YEAR(s.saleDate) = ? AND MONTH(s.saleDate) = ? AND p.isCredit = 1";
+
+        System.out.println("=== CONTANDO VENTAS A CRÉDITO ===");
+        System.out.println("Año: " + year + " | Mes: " + month);
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, year);
+            pstmt.setInt(2, month);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+                    System.out.println("✓ Ventas a crédito: " + count);
+                    return count;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("✗ Error al contar ventas a crédito: " + e.getMessage());
+            throw new RuntimeException("Error al contar ventas a crédito: " + e.getMessage(), e);
+        }
+
+        return 0;
+    }
+
+    @Override
+    public int countCashSalesByMonth(int year, int month) {
+        // Validar parámetros
+        if (month < 1 || month > 12) {
+            throw new IllegalArgumentException("El mes debe estar entre 1 y 12. Recibido: " + month);
+        }
+
+        if (year < 2000 || year > 2100) {
+            throw new IllegalArgumentException("El año debe estar entre 2000 y 2100. Recibido: " + year);
+        }
+
+        // Una venta es de contado si NO tiene ningún pago a crédito
+        String sql = "SELECT COUNT(DISTINCT s.id) " +
+                "FROM Sale s " +
+                "WHERE YEAR(s.saleDate) = ? AND MONTH(s.saleDate) = ? " +
+                "AND s.id NOT IN ( " +
+                "    SELECT DISTINCT saleId FROM Payment WHERE isCredit = 1 " +
+                ")";
+
+        System.out.println("=== CONTANDO VENTAS DE CONTADO ===");
+        System.out.println("Año: " + year + " | Mes: " + month);
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, year);
+            pstmt.setInt(2, month);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+                    System.out.println("✓ Ventas de contado: " + count);
+                    return count;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("✗ Error al contar ventas de contado: " + e.getMessage());
+            throw new RuntimeException("Error al contar ventas de contado: " + e.getMessage(), e);
+        }
+
+        return 0;
     }
 }

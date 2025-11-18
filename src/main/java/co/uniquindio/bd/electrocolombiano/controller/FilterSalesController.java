@@ -27,6 +27,12 @@ public class FilterSalesController {
     private URL location;
 
     @FXML
+    private Label txt_cantidadContado;
+
+    @FXML
+    private Label txt_cantidadCredito;
+
+    @FXML
     private Label txt_cantidadVentas;
 
     @FXML
@@ -80,10 +86,14 @@ public class FilterSalesController {
             // Obtener el monto total de ventas
             BigDecimal montoTotalVentas = saleService.countSaleByMonth(monthNumber, year);
 
-            // Obtener la cantidad de ventas
+            // Obtener la cantidad total de ventas
             int cantidadVentas = saleService.countSaleByMothAndYear(monthNumber, year);
 
-            System.out.println("Cantidad de ventas: " + cantidadVentas);
+            // Obtener cantidad de ventas a crédito
+            int ventasCredito = saleService.countSaleCredit(year, monthNumber);
+
+            // Obtener cantidad de ventas de contado
+            int ventasContado = saleService.countSale(year, monthNumber);
 
             // Formatear el monto como dinero
             String montoFormateado = String.format("$%,.2f", montoTotalVentas);
@@ -91,11 +101,15 @@ public class FilterSalesController {
             // Mostrar resultados en los labels correspondientes
             txt_totalFacturado.setText(montoFormateado);
             txt_cantidadVentas.setText(String.valueOf(cantidadVentas));
+            txt_cantidadCredito.setText(String.valueOf(ventasCredito));
+            txt_cantidadContado.setText(String.valueOf(ventasContado));
 
-            // Mostrar mensaje informativo con ambos datos
+            // Mostrar mensaje informativo con todos los datos
             mostrarAlerta("Filtro aplicado",
                     "Resultados para " + monthName + " de " + year + ":\n\n" +
-                            "• Cantidad de ventas: " + cantidadVentas + "\n" +
+                            "• Cantidad total de ventas: " + cantidadVentas + "\n" +
+                            "• Ventas a crédito: " + ventasCredito + "\n" +
+                            "• Ventas de contado: " + ventasContado + "\n" +
                             "• Monto total facturado: " + montoFormateado);
 
         } catch (NumberFormatException e) {
@@ -129,17 +143,24 @@ public class FilterSalesController {
     @FXML
     void initialize() {
         txt_header_currentUser.setText(store.getCurrentUser().getFullName());
+
+        // Verificar assertions
         assert combo_Month != null : "fx:id=\"combo_Month\" was not injected: check your FXML file 'filterSales.fxml'.";
         assert combo_Year != null : "fx:id=\"combo_Year\" was not injected: check your FXML file 'filterSales.fxml'.";
         assert txt_header_currentUser != null : "fx:id=\"txt_header_currentUser\" was not injected: check your FXML file 'filterSales.fxml'.";
         assert txt_cantidadVentas != null : "fx:id=\"txt_cantidadVentas\" was not injected: check your FXML file 'filterSales.fxml'.";
         assert txt_totalFacturado != null : "fx:id=\"txt_totalFacturado\" was not injected: check your FXML file 'filterSales.fxml'.";
+        assert txt_cantidadContado != null : "fx:id=\"txt_cantidadContado\" was not injected: check your FXML file 'filterSales.fxml'.";
+        assert txt_cantidadCredito != null : "fx:id=\"txt_cantidadCredito\" was not injected: check your FXML file 'filterSales.fxml'.";
 
+        // Inicializar combos
         combo_Month.getItems().setAll("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         combo_Year.getItems().setAll("2025","2024","2023","2022","2021","2020");
 
         // Inicializar los labels
         txt_totalFacturado.setText("$0.00");
         txt_cantidadVentas.setText("0");
+        txt_cantidadCredito.setText("0");
+        txt_cantidadContado.setText("0");
     }
 }

@@ -25,4 +25,6 @@ public interface SaleDAO {
     int countSalesByPaymentType(LocalDate startDate, LocalDate endDate, String paymentType);
     BigDecimal getTotalIVAByQuarter(int year, int quarter);
     int countSalesByMonth(int year, int month);
+    int countCreditSalesByMonth(int year, int month);
+    int countCashSalesByMonth(int year, int month);
 }
