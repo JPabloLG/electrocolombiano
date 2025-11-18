@@ -61,6 +61,10 @@ public class SaleService {
         return saleDAO.getTotalSalesByMonth(year, month);
     }
 
+    public int countSaleByMothAndYear(int moth, int year) throws Exception {
+            return saleDAO.countSalesByMonth(year, moth);
+    }
+
     public BigDecimal fingIVAPay(int year, int cuarter) throws Exception {
         return  saleDAO.getTotalIVAByQuarter(year, cuarter);
     }

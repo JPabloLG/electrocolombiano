@@ -56,8 +56,14 @@
                     <HBox alignment="CENTER" prefHeight="10.0" prefWidth="1208.0" />
                     <HBox alignment="CENTER" layoutX="30.0" layoutY="148.0" prefHeight="62.0" prefWidth="1208.0">
                         <children>
-                            <Label style="-fx-font-size: 25; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Número de Ventas =  " />
+                            <Label style="-fx-font-size: 25; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Cantidad de Ventas =  " />
                             <Label fx:id="txt_cantidadVentas" layoutX="492.0" layoutY="23.0" prefHeight="36.0" prefWidth="254.0" style="-fx-font-size: 25; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+                        </children>
+                    </HBox>
+                    <HBox alignment="CENTER" prefHeight="62.0" prefWidth="1208.0">
+                        <children>
+                            <Label style="-fx-font-size: 25; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Valor facturado =  " />
+                            <Label fx:id="txt_totalFacturado" layoutX="492.0" layoutY="23.0" prefHeight="36.0" prefWidth="254.0" style="-fx-font-size: 25; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
                         </children>
                     </HBox>
                 </VBox>

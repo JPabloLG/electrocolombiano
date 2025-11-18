@@ -456,7 +456,7 @@ public class SaleDAOImpl implements SaleDAO {
     @Override
     public BigDecimal getTotalSalesByMonth(int year, int month) {
         String sql = "SELECT SUM(totalPrice) as total FROM Sale " +
-                "WHERE YEAR(dateSale) = ? AND MONTH(dateSale) = ?";
+                "WHERE YEAR(saleDate) = ? AND MONTH(saleDate) = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, year);
@@ -569,5 +569,45 @@ public class SaleDAOImpl implements SaleDAO {
         }
 
         return false;
+    }
+
+    /**
+     * Cuenta el total de ventas realizadas en un mes específico
+     * @param year Año (ej: 2025)
+     * @param month Mes (1-12)
+     * @return Número de ventas en ese mes
+     */
+    @Override
+    public int countSalesByMonth(int year, int month) {
+        // Validar parámetros
+        if (month < 1 || month > 12) {
+            throw new IllegalArgumentException("El mes debe estar entre 1 y 12");
+        }
+
+        String sql = "SELECT COUNT(*) FROM Sale WHERE YEAR(saleDate) = ? AND MONTH(saleDate) = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, year);
+            pstmt.setInt(2, month);
+
+            System.out.println("=== EJECUTANDO CONSULTA ===");
+            System.out.println("SQL: " + sql);
+            System.out.println("Año: " + year + " | Mes: " + month);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+                    System.out.println("✓ Resultado: " + count + " ventas");
+                    return count;
+                } else {
+                    System.out.println("⚠️  ResultSet vacío");
+                    return 0;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("✗ Error en SQL: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Error al contar ventas por mes: " + e.getMessage(), e);
+        }
     }
 }

@@ -293,6 +293,7 @@ public class CreateSaleController {
                     BigDecimal totalFinanciado = saldoFinanciar.add(interes);
                     BigDecimal valorCuota = totalFinanciado.divide(
                             BigDecimal.valueOf(numeroCuotas),
+
                             2,
                             RoundingMode.HALF_UP
                     );
